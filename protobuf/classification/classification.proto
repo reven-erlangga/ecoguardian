@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package classification;
+
+option go_package = "github.com/ecoguard/protobuf/classification";
+
+message ClassificationResult {
+  string label = 1;
+  float confidence = 2;
+  repeated LabelScore candidates = 3;
+}
+
+message LabelScore {
+  string label = 1;
+  float confidence = 2;
+}
+
+message ClassifyImageRequest {
+  bytes image_data = 1;
+  string image_format = 2;
+  string tweet_id = 3;
+}
+
+message ClassifyImageResponse {
+  ClassificationResult result = 1;
+}

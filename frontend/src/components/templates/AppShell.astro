@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../navigation/Navigation.svelte';
+
+export interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<Layout title={title}>
+  <div class="flex">
+    <Navigation client:load currentPath={Astro.url.pathname} />
+    <main class="flex-1 mx-auto max-w-6xl px-8 py-6">
+      <slot />
+    </main>
+  </div>
+</Layout>

@@ -1,0 +1,10 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AuthTemplate from '@components/templates/auth-template/auth-template.svelte';
+import RegisterForm from '@modules/auth/components/register-form/register-form.svelte';
+---
+<Layout title="Daftar - Ecoguard">
+  <AuthTemplate title="Buat Akun">
+    <RegisterForm client:load />
+  </AuthTemplate>
+</Layout>

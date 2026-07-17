@@ -1,0 +1,86 @@
+serve:
+  port: 4000
+  hostname: 0.0.0.0
+  browser: false
+  healthCheckEndpoint: /health
+
+sources:
+  - name: Classification
+    handler:
+      grpc:
+        endpoint: localhost:50053
+        source:
+          file: proto/classification/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: User
+    handler:
+      grpc:
+        endpoint: localhost:50051
+        source:
+          file: proto/user/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: Twitter
+    handler:
+      grpc:
+        endpoint: localhost:50052
+        source:
+          file: proto/twitter/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: Notification
+    handler:
+      grpc:
+        endpoint: localhost:50054
+        source:
+          file: proto/notification/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: NLP
+    handler:
+      grpc:
+        endpoint: localhost:50055
+        source:
+          file: proto/nlp/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: Blockchain
+    handler:
+      grpc:
+        endpoint: localhost:50056
+        source:
+          file: proto/blockchain/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: Issue
+    handler:
+      grpc:
+        endpoint: localhost:50057
+        source:
+          file: proto/issue/service.proto
+          load:
+            includeDirs:
+              - proto
+
+  - name: Asset
+    handler:
+      grpc:
+        endpoint: localhost:50058
+        source:
+          file: proto/asset/service.proto
+          load:
+            includeDirs:
+              - proto

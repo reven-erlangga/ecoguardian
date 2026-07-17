@@ -1,0 +1,15 @@
+# ponytail: exclude cache, venv, dan model from build context
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.venv*
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.env
+**/__pycache__/
+**/*.pyc

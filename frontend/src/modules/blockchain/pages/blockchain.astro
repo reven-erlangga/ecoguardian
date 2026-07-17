@@ -1,0 +1,22 @@
+---
+import BlockchainChain from '@components/organisms/blockchain-chain/blockchain-chain.svelte';
+---
+
+<section class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-foreground">Blockchain</h1>
+    <p class="text-sm text-muted-foreground">Riwayat klasifikasi terverifikasi</p>
+  </div>
+
+  <BlockchainChain blocks={[]} verified={true} client:load />
+
+  <div class="neo-border neo-shadow-sm rounded-lg bg-card p-6">
+    <h3 class="text-lg font-semibold text-foreground mb-2">Tentang Blockchain</h3>
+    <p class="text-sm text-muted-foreground">
+      Setiap hasil klasifikasi lingkungan dicatat dalam rantai blok yang
+      terverifikasi untuk memastikan transparansi dan integritas data.
+      Setiap blok berisi hash dari blok sebelumnya, sehingga membentuk
+      rantai yang tidak dapat diubah.
+    </p>
+  </div>
+</section>

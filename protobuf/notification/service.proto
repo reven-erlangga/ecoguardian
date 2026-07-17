@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package notification;
+
+option go_package = "github.com/ecoguard/protobuf/notification";
+
+import "notification/notification.proto";
+import "common/common.proto";
+
+service NotificationService {
+  rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
+  rpc GetNotifications (GetNotificationsRequest) returns (GetNotificationsResponse);
+  rpc MarkRead (MarkReadRequest) returns (common.Empty);
+}

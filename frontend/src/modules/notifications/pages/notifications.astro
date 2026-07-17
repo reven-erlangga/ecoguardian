@@ -1,0 +1,14 @@
+---
+import Layout from '@components/templates/AppShell.astro';
+import { NotifPanel } from '../components/notif-panel';
+---
+
+<Layout title="Notifikasi - Ecoguard">
+  <section class="space-y-6">
+    <div>
+      <h1 class="text-2xl font-bold text-foreground">Notifikasi</h1>
+      <p class="text-sm text-muted-foreground">Pemberitahuan dan peringatan lingkungan</p>
+    </div>
+    <NotifPanel client:load />
+  </section>
+</Layout>

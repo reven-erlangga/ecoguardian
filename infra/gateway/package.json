@@ -1,0 +1,12 @@
+{
+  "name": "ecoguard-gateway",
+  "private": true,
+  "scripts": {
+    "dev": "graphql-mesh dev"
+  },
+  "dependencies": {
+    "@graphql-mesh/cli": "0.100.53",
+    "@graphql-mesh/grpc": "0.108.43",
+    "graphql": "^16"
+  }
+}

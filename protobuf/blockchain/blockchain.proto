@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package blockchain;
+
+option go_package = "github.com/ecoguard/protobuf/blockchain";
+
+message Block {
+  int32 index = 1;
+  int64 timestamp = 2;
+  string previous_hash = 3;
+  string hash = 4;
+  int32 nonce = 5;
+  BlockData data = 6;
+}
+
+message BlockData {
+  string type = 1;
+  string tweet_id = 2;
+  string label = 3;
+  float confidence = 4;
+  string image_hash = 5;
+  Location location = 6;
+  ResolutionData resolution = 7;
+}
+
+message Location {
+  double lat = 1;
+  double lon = 2;
+  string address = 3;
+}
+
+message ResolutionData {
+  string admin_id = 1;
+  string notes = 2;
+  string resolved_image_hash = 3;
+  int64 resolved_at = 4;
+}
+
+message RecordClassificationRequest {
+  string tweet_id = 1;
+  string label = 2;
+  float confidence = 3;
+  string image_hash = 4;
+  Location location = 5;
+}
+
+message RecordResolutionRequest {
+  string tweet_id = 1;
+  string admin_id = 2;
+  string notes = 3;
+  string resolved_image_hash = 4;
+}
+
+message RecordResponse {
+  Block block = 1;
+  bool success = 2;
+  string error = 3;
+}
+
+message GetHistoryRequest {
+  string tweet_id = 1;
+}
+
+message GetHistoryResponse {
+  repeated Block blocks = 1;
+}
+
+message VerifyResponse {
+  bool valid = 1;
+  int32 blocks_count = 2;
+  string error = 3;
+}

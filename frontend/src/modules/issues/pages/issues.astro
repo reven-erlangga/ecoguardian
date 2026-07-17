@@ -1,0 +1,25 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AppShell from '@components/templates/app-shell/app-shell.svelte';
+import IssueList from '../components/issue-list/IssueList.svelte';
+import WordCloud from '../components/word-cloud/WordCloud.svelte';
+---
+<Layout title="Issues - Ecoguard">
+  <AppShell currentPath="/issues">
+    <div class="space-y-6">
+      <div>
+        <h1 class="text-3xl font-bold">Issues</h1>
+        <p class="text-gray-600">Laporan yang dikelompokkan berdasarkan lokasi</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+          <IssueList client:load />
+        </div>
+        <div>
+          <WordCloud client:load />
+        </div>
+      </div>
+    </div>
+  </AppShell>
+</Layout>

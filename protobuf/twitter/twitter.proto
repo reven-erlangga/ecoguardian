@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package twitter;
+
+option go_package = "github.com/ecoguard/protobuf/twitter";
+
+import "common/common.proto";
+
+message Tweet {
+  string id = 1;
+  string tweet_id = 2;
+  string text = 3;
+  string author = 4;
+  string author_username = 5;
+  repeated string media_urls = 6;
+  common.Timestamp created_at = 7;
+  map<string, string> metadata = 8;
+}
+
+message QueryTweetsRequest {
+  string author = 1;
+  string keyword = 2;
+  string classification_label = 3;
+  common.Timestamp start_date = 4;
+  common.Timestamp end_date = 5;
+  common.Pagination pagination = 6;
+}
+
+message QueryTweetsResponse {
+  repeated Tweet tweets = 1;
+  common.PaginationResponse pagination = 2;
+}

@@ -1,0 +1,6 @@
+requests>=2.31
+grpcio>=1.60
+grpcio-tools>=1.60
+pytest>=8.0
+Pillow>=10.0
+protobuf>=4.25

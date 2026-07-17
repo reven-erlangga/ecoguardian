@@ -1,0 +1,13 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AppShell from '@components/templates/app-shell/app-shell.svelte';
+import IssueDetail from '@modules/issues/components/issue-detail/IssueDetail.svelte';
+
+const { id } = Astro.params;
+---
+
+<Layout title="Detail Issue - Ecoguard">
+  <AppShell currentPath="/issues">
+    <IssueDetail issueId={id!} client:load />
+  </AppShell>
+</Layout>

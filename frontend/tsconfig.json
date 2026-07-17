@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "strict": true,
+        "types": ["svelte"],
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@components/*": ["./src/components/*"],
+      "@modules/*": ["./src/modules/*"],
+      "$shared/*": ["./src/shared/*"],
+      "$components/*": ["./src/components/*"],
+      "$modules/*": ["./src/modules/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte", "src/**/*.svelte.ts", "src/**/*.astro"],
+  "exclude": ["node_modules"]
+}

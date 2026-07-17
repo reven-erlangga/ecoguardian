@@ -1,0 +1,84 @@
+{
+  "rabbit_version": "3.13",
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "guest",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    { "name": "/" }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "ecoguard.events",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ecoguard.dlx",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "ecoguard.classification.process",
+      "vhost": "/",
+      "durable": true,
+      "arguments": {
+        "x-dead-letter-exchange": "ecoguard.dlx"
+      }
+    },
+    {
+      "name": "ecoguard.notifications.send",
+      "vhost": "/",
+      "durable": true,
+      "arguments": {
+        "x-dead-letter-exchange": "ecoguard.dlx"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "ecoguard.events",
+      "vhost": "/",
+      "destination": "ecoguard.classification.process",
+      "destination_type": "queue",
+      "routing_key": "tweet.ingested",
+      "arguments": {}
+    },
+    {
+      "source": "ecoguard.events",
+      "vhost": "/",
+      "destination": "ecoguard.notifications.send",
+      "destination_type": "queue",
+      "routing_key": "classification.completed",
+      "arguments": {}
+    },
+    {
+      "source": "ecoguard.events",
+      "vhost": "/",
+      "destination": "ecoguard.notifications.send",
+      "destination_type": "queue",
+      "routing_key": "alert.triggered",
+      "arguments": {}
+    }
+  ]
+}

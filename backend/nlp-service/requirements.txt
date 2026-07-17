@@ -1,0 +1,8 @@
+flask>=3.0
+grpcio>=1.60
+grpcio-tools>=1.60
+requests>=2.31
+redis>=5.0
+# IndoBERT — optional, service falls back to simple model if not installed
+# transformers>=4.36
+# torch>=2.0

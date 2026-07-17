@@ -1,0 +1,15 @@
+# Rust
+target/
+**/*.rs.bk
+
+# Python (from protobuf copy)
+protobuf/**/__pycache__/
+protobuf/**/*.pyc
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/

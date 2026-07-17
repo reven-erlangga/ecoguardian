@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-auth-service
+  namespace: ecoguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-auth-service
+  template:
+    metadata:
+      labels:
+        app: user-auth-service
+    spec:
+      containers:
+        - name: user-auth
+          image: ecoguard/user-auth-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50051
+          env:
+            - name: DATABASE_URL
+              value: postgres://ecoguard:ecoguard123@pgbouncer:5432/ecoguard_user
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: jwt-secret
+          readinessProbe:
+            tcpSocket:
+              port: 50051
+          livenessProbe:
+            tcpSocket:
+              port: 50051
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-auth-service
+  namespace: ecoguard
+spec:
+  selector:
+    app: user-auth-service
+  ports:
+    - port: 50051
+      targetPort: 50051

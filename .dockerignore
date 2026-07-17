@@ -1,0 +1,27 @@
+# Rust
+target/
+**/target/
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/.venv
+**/venv/
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Node
+**/node_modules/
+
+# Git & IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Data & env
+**/*.egg-info/
+**/dist/
+**/build/
+.env
+**/__pycache__

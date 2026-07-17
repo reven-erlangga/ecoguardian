@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package classification;
+
+option go_package = "github.com/ecoguard/protobuf/classification";
+
+import "classification/classification.proto";
+
+service ClassificationService {
+  rpc ClassifyImage (ClassifyImageRequest) returns (ClassifyImageResponse);
+}

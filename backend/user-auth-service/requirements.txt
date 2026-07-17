@@ -1,0 +1,10 @@
+flask>=3.0
+grpcio>=1.60
+grpcio-tools>=1.60
+psycopg2-binary>=2.9
+bcrypt>=4.1
+pyjwt>=2.8
+
+# Test
+pytest>=8.0
+pytest-mock>=3.0

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package nlp;
+
+option go_package = "github.com/ecoguard/protobuf/nlp";
+
+message AnalyzeTextRequest {
+  string text = 1;
+}
+
+message AnalyzeTextResponse {
+  string label = 1;
+  float confidence = 2;
+  string extracted_address = 3;
+  string paraphrased_text = 4;
+}
+
+message GeocodeRequest {
+  string address = 1;
+}
+
+message GeocodeResponse {
+  double lat = 1;
+  double lon = 2;
+  string display_name = 3;
+}

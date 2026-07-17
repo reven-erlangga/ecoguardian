@@ -1,0 +1,262 @@
+# ─── Networks ────────────────────────────────────────────
+networks:
+  ecoguard:
+    driver: bridge
+
+# ─── Services ────────────────────────────────────────────
+services:
+
+  # ═══════════════════════════════════════════════════════
+  # INFRASTRUCTURE
+  # ═══════════════════════════════════════════════════════
+
+  postgres-user:
+    image: postgres:16-alpine
+    container_name: ecoguard-pg-user
+    networks: [ecoguard]
+    environment:
+      POSTGRES_DB: ecoguard_user
+      POSTGRES_USER: ecoguard
+      POSTGRES_PASSWORD: ecoguard_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-user-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecoguard -d ecoguard_user"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  postgres-notif:
+    image: postgres:16-alpine
+    container_name: ecoguard-pg-notif
+    networks: [ecoguard]
+    environment:
+      POSTGRES_DB: ecoguard_notif
+      POSTGRES_USER: ecoguard
+      POSTGRES_PASSWORD: ecoguard_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg-notif-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecoguard -d ecoguard_notif"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: ecoguard-pgbouncer
+    networks: [ecoguard]
+    environment:
+      DB_USER: ecoguard
+      DB_PASSWORD: ecoguard_dev
+      DB_HOST: postgres-user
+      AUTH_TYPE: scram-sha-256
+      POOL_MODE: transaction
+      DEFAULT_POOL_SIZE: 20
+    ports:
+      - "6432:6432"
+    depends_on:
+      postgres-user: { condition: service_healthy }
+      postgres-notif: { condition: service_healthy }
+
+  mongodb:
+    image: mongo:7
+    container_name: ecoguard-mongo
+    networks: [ecoguard]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: ecoguard-rabbitmq
+    networks: [ecoguard]
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecoguard-redis
+    networks: [ecoguard]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ═══════════════════════════════════════════════════════
+  # BACKEND SERVICES
+  # ═══════════════════════════════════════════════════════
+
+  classification-service:
+    build:
+      context: ../backend/classification-service
+    container_name: ecoguard-classification
+    networks: [ecoguard]
+    ports:
+      - "50053:50053"
+      - "8083:8083"
+    environment:
+      GRPC_PORT: "50053"
+      FLASK_PORT: "8083"
+      RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+
+  nlp-service:
+    build:
+      context: ../backend/nlp-service
+    container_name: ecoguard-nlp
+    networks: [ecoguard]
+    ports:
+      - "50055:50055"
+    environment:
+      GRPC_PORT: "50055"
+      REDIS_URL: "redis://redis:6379/0"
+    depends_on:
+      redis: { condition: service_healthy }
+
+  user-auth-service:
+    build:
+      context: ../backend/user-auth-service
+    container_name: ecoguard-user-auth
+    networks: [ecoguard]
+    ports:
+      - "50051:50051"
+    environment:
+      GRPC_PORT: "50051"
+      DATABASE_URL: "postgresql://ecoguard:ecoguard_dev@postgres-user:5432/ecoguard_user"
+      JWT_SECRET: "dev-secret-key"
+    depends_on:
+      postgres-user: { condition: service_healthy }
+
+  notification-service:
+    build:
+      context: ../backend/notification-service
+    container_name: ecoguard-notification
+    networks: [ecoguard]
+    ports:
+      - "50054:50054"
+    environment:
+      GRPC_PORT: "50054"
+      DATABASE_URL: "postgresql://ecoguard:ecoguard_dev@postgres-notif:5432/ecoguard_notif"
+      RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      postgres-notif: { condition: service_healthy }
+
+  twitter-service:
+    build:
+      context: ..
+      dockerfile: backend/twitter-service/Dockerfile
+    container_name: ecoguard-twitter
+    networks: [ecoguard]
+    ports:
+      - "50052:50052"
+      - "8000:8000"
+    environment:
+      GRPC_PORT: "50052"
+      HTTP_PORT: "8000"
+      MONGO_URI: "mongodb://mongodb:27017"
+      RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
+      CLASSIFICATION_GRPC_ADDR: "http://classification-service:50053"
+      NLP_GRPC_ADDR: "http://nlp-service:50055"
+    depends_on:
+      mongodb: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+      classification-service: { condition: service_started }
+      nlp-service: { condition: service_started }
+
+  blockchain-service:
+    build:
+      context: ../backend/blockchain-service
+    container_name: ecoguard-blockchain
+    networks: [ecoguard]
+    ports:
+      - "50056:50056"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      GRPC_PORT: "50056"
+      MONGODB_URI: "mongodb://host.docker.internal:27017"
+      BLOCKCHAIN_DB: "ecoguard_blockchain"
+      POW_DIFFICULTY: "4"
+    depends_on:
+      mongodb: { condition: service_healthy }
+
+  issue-service:
+    build:
+      context: ../backend/issue-service
+    container_name: ecoguard-issue
+    networks: [ecoguard]
+    ports:
+      - "50057:50057"
+    environment:
+      GRPC_PORT: "50057"
+      MONGODB_URI: "mongodb://mongodb:27017"
+    depends_on:
+      mongodb: { condition: service_healthy }
+
+  asset-service:
+    build:
+      context: ../backend/asset-service
+    container_name: ecoguard-asset
+    networks: [ecoguard]
+    ports:
+      - "50058:50058"
+      - "8088:8088"
+    environment:
+      ASSET_GRPC_PORT: "50058"
+      ASSET_HTTP_PORT: "8088"
+    volumes:
+      - asset-uploads:/app/uploads
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: infra/gateway/Dockerfile
+    container_name: ecoguard-gateway
+    network_mode: "host"
+    ports:
+      - "4000:4000"
+    depends_on:
+      classification-service: { condition: service_started }
+      user-auth-service: { condition: service_started }
+      twitter-service: { condition: service_started }
+      notification-service: { condition: service_started }
+      nlp-service: { condition: service_started }
+      blockchain-service: { condition: service_started }
+      issue-service: { condition: service_started }
+      asset-service: { condition: service_started }
+
+# ─── Volumes ─────────────────────────────────────────────
+volumes:
+  pg-user-data:
+  pg-notif-data:
+  mongo-data:
+  asset-uploads:
+  rabbitmq-data:

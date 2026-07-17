@@ -1,0 +1,62 @@
+schema @transport(subgraph: "NLP", kind: "grpc", location: "nlp-service:50055", options: {requestTimeout: 200000, roots: [{name: "Root0", rootJson: "{\"nested\":{\"nlp\":{\"options\":{\"go_package\":\"github.com/ecoguard/protobuf/nlp\"},\"nested\":{\"NLPService\":{\"methods\":{\"AnalyzeText\":{\"requestType\":\"AnalyzeTextRequest\",\"responseType\":\"AnalyzeTextResponse\",\"comment\":null},\"Geocode\":{\"requestType\":\"GeocodeRequest\",\"responseType\":\"GeocodeResponse\",\"comment\":null}},\"comment\":null},\"AnalyzeTextRequest\":{\"fields\":{\"text\":{\"type\":\"string\",\"id\":1,\"comment\":null}},\"comment\":null},\"AnalyzeTextResponse\":{\"fields\":{\"label\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"confidence\":{\"type\":\"float\",\"id\":2,\"comment\":null},\"extracted_address\":{\"type\":\"string\",\"id\":3,\"comment\":null},\"paraphrased_text\":{\"type\":\"string\",\"id\":4,\"comment\":null}},\"comment\":null},\"GeocodeRequest\":{\"fields\":{\"address\":{\"type\":\"string\",\"id\":1,\"comment\":null}},\"comment\":null},\"GeocodeResponse\":{\"fields\":{\"lat\":{\"type\":\"double\",\"id\":1,\"comment\":null},\"lon\":{\"type\":\"double\",\"id\":2,\"comment\":null},\"display_name\":{\"type\":\"string\",\"id\":3,\"comment\":null}},\"comment\":null}}}}}"}]}) {
+  query: Query
+  mutation: Mutation
+}
+
+directive @grpcMethod(subgraph: String, rootJsonName: String, objPath: String, methodName: String, responseStream: Boolean) on FIELD_DEFINITION
+
+directive @grpcConnectivityState(subgraph: String, rootJsonName: String, objPath: String) on FIELD_DEFINITION
+
+"""
+Directs the executor to stream plural fields when the `if` argument is true or undefined.
+"""
+directive @stream(
+  """Stream when true or undefined."""
+  if: Boolean! = true
+  """Unique name"""
+  label: String
+  """Number of items to return immediately"""
+  initialCount: Int = 0
+) on FIELD
+
+directive @transport(subgraph: String, kind: String, location: String, options: TransportOptions) repeatable on SCHEMA
+
+type Query {
+  nlp_NLPService_connectivityState(tryToConnect: Boolean): ConnectivityState @grpcConnectivityState(subgraph: "NLP", rootJsonName: "Root0", objPath: "nlp.NLPService")
+}
+
+enum ConnectivityState {
+  IDLE
+  CONNECTING
+  READY
+  TRANSIENT_FAILURE
+  SHUTDOWN
+}
+
+type Mutation {
+  nlp_NLPService_AnalyzeText(input: nlp__AnalyzeTextRequest_Input): nlp__AnalyzeTextResponse @grpcMethod(subgraph: "NLP", rootJsonName: "Root0", objPath: "nlp.NLPService", methodName: "AnalyzeText", responseStream: false)
+  nlp_NLPService_Geocode(input: nlp__GeocodeRequest_Input): nlp__GeocodeResponse @grpcMethod(subgraph: "NLP", rootJsonName: "Root0", objPath: "nlp.NLPService", methodName: "Geocode", responseStream: false)
+}
+
+type nlp__AnalyzeTextResponse {
+  label: String
+  confidence: Float
+  extracted_address: String
+  paraphrased_text: String
+}
+
+input nlp__AnalyzeTextRequest_Input {
+  text: String
+}
+
+type nlp__GeocodeResponse {
+  lat: Float
+  lon: Float
+  display_name: String
+}
+
+input nlp__GeocodeRequest_Input {
+  address: String
+}
+
+scalar TransportOptions

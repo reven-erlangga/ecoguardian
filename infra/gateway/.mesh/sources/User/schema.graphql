@@ -1,0 +1,113 @@
+schema @transport(subgraph: "User", kind: "grpc", location: "user-auth-service:50051", options: {requestTimeout: 200000, roots: [{name: "Root0", rootJson: "{\"nested\":{\"user\":{\"options\":{\"go_package\":\"github.com/ecoguard/protobuf/user\"},\"nested\":{\"UserService\":{\"methods\":{\"Register\":{\"requestType\":\"RegisterRequest\",\"responseType\":\"RegisterResponse\",\"comment\":null},\"Login\":{\"requestType\":\"LoginRequest\",\"responseType\":\"LoginResponse\",\"comment\":null},\"GetUser\":{\"requestType\":\"GetUserRequest\",\"responseType\":\"User\",\"comment\":null},\"UpdateUser\":{\"requestType\":\"UpdateUserRequest\",\"responseType\":\"User\",\"comment\":null}},\"comment\":null},\"AuthService\":{\"methods\":{\"ValidateToken\":{\"requestType\":\"ValidateTokenRequest\",\"responseType\":\"ValidateTokenResponse\",\"comment\":null},\"RefreshToken\":{\"requestType\":\"RefreshTokenRequest\",\"responseType\":\"RefreshTokenResponse\",\"comment\":null}},\"comment\":null},\"ValidateTokenRequest\":{\"fields\":{\"token\":{\"type\":\"string\",\"id\":1,\"comment\":null}},\"comment\":null},\"ValidateTokenResponse\":{\"fields\":{\"user_id\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"role\":{\"type\":\"string\",\"id\":2,\"comment\":null}},\"comment\":null},\"RefreshTokenRequest\":{\"fields\":{\"token\":{\"type\":\"string\",\"id\":1,\"comment\":null}},\"comment\":null},\"RefreshTokenResponse\":{\"fields\":{\"token\":{\"type\":\"string\",\"id\":1,\"comment\":null}},\"comment\":null},\"User\":{\"fields\":{\"id\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"email\":{\"type\":\"string\",\"id\":2,\"comment\":null},\"username\":{\"type\":\"string\",\"id\":3,\"comment\":null},\"role\":{\"type\":\"string\",\"id\":4,\"comment\":null},\"created_at\":{\"type\":\"common.Timestamp\",\"id\":5,\"comment\":null},\"updated_at\":{\"type\":\"common.Timestamp\",\"id\":6,\"comment\":null}},\"comment\":null},\"RegisterRequest\":{\"fields\":{\"email\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"username\":{\"type\":\"string\",\"id\":2,\"comment\":null},\"password\":{\"type\":\"string\",\"id\":3,\"comment\":null}},\"comment\":null},\"RegisterResponse\":{\"fields\":{\"user\":{\"type\":\"User\",\"id\":1,\"comment\":null},\"token\":{\"type\":\"string\",\"id\":2,\"comment\":null}},\"comment\":null},\"LoginRequest\":{\"fields\":{\"email\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"password\":{\"type\":\"string\",\"id\":2,\"comment\":null}},\"comment\":null},\"LoginResponse\":{\"fields\":{\"user\":{\"type\":\"User\",\"id\":1,\"comment\":null},\"token\":{\"type\":\"string\",\"id\":2,\"comment\":null}},\"comment\":null},\"GetUserRequest\":{\"fields\":{\"id\":{\"type\":\"string\",\"id\":1,\"comment\":null}},\"comment\":null},\"UpdateUserRequest\":{\"fields\":{\"id\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"email\":{\"type\":\"string\",\"id\":2,\"comment\":null},\"username\":{\"type\":\"string\",\"id\":3,\"comment\":null}},\"comment\":null}}},\"common\":{\"options\":{\"go_package\":\"github.com/ecoguard/protobuf/common\"},\"nested\":{\"Timestamp\":{\"fields\":{\"seconds\":{\"type\":\"int64\",\"id\":1,\"comment\":null},\"nanos\":{\"type\":\"int32\",\"id\":2,\"comment\":null}},\"comment\":null},\"Pagination\":{\"fields\":{\"page\":{\"type\":\"int32\",\"id\":1,\"comment\":null},\"per_page\":{\"type\":\"int32\",\"id\":2,\"comment\":null}},\"comment\":null},\"PaginationResponse\":{\"fields\":{\"page\":{\"type\":\"int32\",\"id\":1,\"comment\":null},\"per_page\":{\"type\":\"int32\",\"id\":2,\"comment\":null},\"total\":{\"type\":\"int32\",\"id\":3,\"comment\":null}},\"comment\":null},\"Empty\":{\"fields\":{},\"comment\":null},\"Error\":{\"fields\":{\"code\":{\"type\":\"string\",\"id\":1,\"comment\":null},\"message\":{\"type\":\"string\",\"id\":2,\"comment\":null}},\"comment\":null}}}}}"}]}) {
+  query: Query
+  mutation: Mutation
+}
+
+directive @grpcMethod(subgraph: String, rootJsonName: String, objPath: String, methodName: String, responseStream: Boolean) on FIELD_DEFINITION
+
+directive @grpcConnectivityState(subgraph: String, rootJsonName: String, objPath: String) on FIELD_DEFINITION
+
+"""
+Directs the executor to stream plural fields when the `if` argument is true or undefined.
+"""
+directive @stream(
+  """Stream when true or undefined."""
+  if: Boolean! = true
+  """Unique name"""
+  label: String
+  """Number of items to return immediately"""
+  initialCount: Int = 0
+) on FIELD
+
+directive @transport(subgraph: String, kind: String, location: String, options: TransportOptions) repeatable on SCHEMA
+
+type Query {
+  user_UserService_GetUser(input: user__GetUserRequest_Input): user__User @grpcMethod(subgraph: "User", rootJsonName: "Root0", objPath: "user.UserService", methodName: "GetUser", responseStream: false)
+  user_UserService_connectivityState(tryToConnect: Boolean): ConnectivityState @grpcConnectivityState(subgraph: "User", rootJsonName: "Root0", objPath: "user.UserService")
+  user_AuthService_connectivityState(tryToConnect: Boolean): ConnectivityState @grpcConnectivityState(subgraph: "User", rootJsonName: "Root0", objPath: "user.AuthService")
+}
+
+type user__User {
+  id: String
+  email: String
+  username: String
+  role: String
+  created_at: common__Timestamp
+  updated_at: common__Timestamp
+}
+
+type common__Timestamp {
+  seconds: BigInt
+  nanos: Int
+}
+
+"""
+The `BigInt` scalar type represents non-fractional signed whole numeric values.
+"""
+scalar BigInt
+
+input user__GetUserRequest_Input {
+  id: String
+}
+
+enum ConnectivityState {
+  IDLE
+  CONNECTING
+  READY
+  TRANSIENT_FAILURE
+  SHUTDOWN
+}
+
+type Mutation {
+  user_UserService_Register(input: user__RegisterRequest_Input): user__RegisterResponse @grpcMethod(subgraph: "User", rootJsonName: "Root0", objPath: "user.UserService", methodName: "Register", responseStream: false)
+  user_UserService_Login(input: user__LoginRequest_Input): user__LoginResponse @grpcMethod(subgraph: "User", rootJsonName: "Root0", objPath: "user.UserService", methodName: "Login", responseStream: false)
+  user_UserService_UpdateUser(input: user__UpdateUserRequest_Input): user__User @grpcMethod(subgraph: "User", rootJsonName: "Root0", objPath: "user.UserService", methodName: "UpdateUser", responseStream: false)
+  user_AuthService_ValidateToken(input: user__ValidateTokenRequest_Input): user__ValidateTokenResponse @grpcMethod(subgraph: "User", rootJsonName: "Root0", objPath: "user.AuthService", methodName: "ValidateToken", responseStream: false)
+  user_AuthService_RefreshToken(input: user__RefreshTokenRequest_Input): user__RefreshTokenResponse @grpcMethod(subgraph: "User", rootJsonName: "Root0", objPath: "user.AuthService", methodName: "RefreshToken", responseStream: false)
+}
+
+type user__RegisterResponse {
+  user: user__User
+  token: String
+}
+
+input user__RegisterRequest_Input {
+  email: String
+  username: String
+  password: String
+}
+
+type user__LoginResponse {
+  user: user__User
+  token: String
+}
+
+input user__LoginRequest_Input {
+  email: String
+  password: String
+}
+
+input user__UpdateUserRequest_Input {
+  id: String
+  email: String
+  username: String
+}
+
+type user__ValidateTokenResponse {
+  user_id: String
+  role: String
+}
+
+input user__ValidateTokenRequest_Input {
+  token: String
+}
+
+type user__RefreshTokenResponse {
+  token: String
+}
+
+input user__RefreshTokenRequest_Input {
+  token: String
+}
+
+scalar TransportOptions

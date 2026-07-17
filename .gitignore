@@ -1,0 +1,47 @@
+# ─── Training (data besar) ───────────────────────────────
+training/dataset/
+training/output/
+training/.venv/
+training/venv/
+training/__pycache__/
+
+# ─── Model ONNX / PyTorch ────────────────────────────────
+*.onnx
+*.pth
+*.pt
+*.pkl
+*.h5
+*.weights
+*.bin
+**/models/*.onnx
+**/models/*.pth
+
+# ─── Python ──────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+.venv-train/
+
+# ─── Environment ─────────────────────────────────────────
+.env
+.env.local
+
+# ─── IDE ─────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── OS ──────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Generated proto ─────────────────────────────────────
+**/protogen/
+**/proto/__pycache__/
+
+# ─── Docker ──────────────────────────────────────────────
+**/target/

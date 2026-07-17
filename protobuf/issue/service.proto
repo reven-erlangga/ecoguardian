@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package issue;
+
+option go_package = "github.com/ecoguard/protobuf/issue";
+
+import "issue/issue.proto";
+import "common/common.proto";
+
+message ListIssuesRequest {
+  string status = 1;
+  string type = 2;
+  common.Pagination pagination = 3;
+}
+
+message ListIssuesResponse {
+  repeated Issue issues = 1;
+  common.PaginationResponse pagination = 2;
+}
+
+message GetIssueRequest {
+  string id = 1;
+}
+
+message GetIssueResponse {
+  Issue issue = 1;
+}
+
+message ResolveIssueRequest {
+  string issue_id = 1;
+  string admin_id = 2;
+  string notes = 3;
+  string image_hash = 4;
+}
+
+message ResolveIssueResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ListClustersResponse {
+  repeated Cluster clusters = 1;
+}
+
+message WordCloudItem {
+  string word = 1;
+  int32 count = 2;
+}
+
+message GetWordCloudResponse {
+  repeated WordCloudItem items = 1;
+}
+
+service IssueService {
+  rpc ListIssues (ListIssuesRequest) returns (ListIssuesResponse);
+  rpc GetIssue (GetIssueRequest) returns (GetIssueResponse);
+  rpc ResolveIssue (ResolveIssueRequest) returns (ResolveIssueResponse);
+  rpc ListClusters (common.Empty) returns (ListClustersResponse);
+  rpc GetWordCloud (common.Empty) returns (GetWordCloudResponse);
+}

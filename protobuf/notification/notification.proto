@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package notification;
+
+option go_package = "github.com/ecoguard/protobuf/notification";
+
+import "common/common.proto";
+
+message Notification {
+  string id = 1;
+  string user_id = 2;
+  string type = 3;
+  string channel = 4;
+  string title = 5;
+  string content = 6;
+  string status = 7;
+  common.Timestamp created_at = 8;
+  common.Timestamp read_at = 9;
+}
+
+message SendNotificationRequest {
+  string user_id = 1;
+  string type = 2;
+  string channel = 3;
+  string title = 4;
+  string content = 5;
+}
+
+message SendNotificationResponse {
+  string id = 1;
+}
+
+message GetNotificationsRequest {
+  string user_id = 1;
+  string status = 2;
+  common.Pagination pagination = 3;
+}
+
+message GetNotificationsResponse {
+  repeated Notification notifications = 1;
+  common.PaginationResponse pagination = 2;
+}
+
+message MarkReadRequest {
+  string id = 1;
+  string user_id = 2;
+}

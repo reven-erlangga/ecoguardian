@@ -1,0 +1,14 @@
+# Model ONNX — download dari Colab, gak ikut git
+models/
+*.onnx
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Env
+.env

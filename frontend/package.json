@@ -1,0 +1,32 @@
+{
+  "name": "ecoguard-frontend",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^7.0",
+    "@astrojs/tailwind": "^6.0",
+    "@urql/core": "^5.0",
+    "@urql/svelte": "^4.0",
+    "astro": "^5.0",
+    "autoprefixer": "^10.4",
+    "class-variance-authority": "^0.7",
+    "clsx": "^2.1",
+    "graphql": "^16.0",
+    "lucide-svelte": "^0.400",
+    "maplibre-gl": "^5.24.0",
+    "postcss": "^8.4",
+    "svelte": "^5.0",
+    "tailwind-merge": "^2.6",
+    "tailwindcss": "^3.4",
+    "tailwindcss-animate": "^1.0",
+    "zod": "^3.23"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "phosphor-svelte": "^3.1.0"
+  }
+}

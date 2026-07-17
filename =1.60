@@ -1,0 +1,12 @@
+Collecting grpcio-tools
+  Using cached grpcio_tools-1.82.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.3 kB)
+Requirement already satisfied: protobuf<8.0.0,>=7.35.1 in ./.venv-train/lib/python3.14/site-packages (from grpcio-tools) (7.35.1)
+Requirement already satisfied: grpcio>=1.82.1 in ./.venv-train/lib/python3.14/site-packages (from grpcio-tools) (1.82.1)
+Collecting setuptools>=77.0.1 (from grpcio-tools)
+  Using cached setuptools-83.0.0-py3-none-any.whl.metadata (6.6 kB)
+Requirement already satisfied: typing-extensions~=4.12 in ./.venv-train/lib/python3.14/site-packages (from grpcio>=1.82.1->grpcio-tools) (4.16.0)
+Using cached grpcio_tools-1.82.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.8 MB)
+Using cached setuptools-83.0.0-py3-none-any.whl (1.0 MB)
+Installing collected packages: setuptools, grpcio-tools
+
+Successfully installed grpcio-tools-1.82.1 setuptools-83.0.0

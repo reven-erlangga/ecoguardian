@@ -1,0 +1,21 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AppShell from '@components/templates/app-shell/app-shell.svelte';
+import EmptyState from '@components/empty-state/empty-state.svelte';
+import TweetFilter from '@modules/tweets/components/tweet-filter/tweet-filter.svelte';
+---
+<Layout title="Tweets - Ecoguard">
+  <AppShell currentPath="/tweets">
+    <div class="space-y-4">
+      <h1 class="text-3xl font-bold">Tweets</h1>
+      <TweetFilter client:load />
+      <EmptyState 
+        icon="MessageSquareText"
+        title="Belum Ada Tweet"
+        description="Tweet yang masuk akan muncul di sini setelah melalui proses klasifikasi."
+        actionLabel="Lihat Dashboard"
+        actionHref="/dashboard"
+      />
+    </div>
+  </AppShell>
+</Layout>

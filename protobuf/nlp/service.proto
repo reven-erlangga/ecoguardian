@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package nlp;
+
+option go_package = "github.com/ecoguard/protobuf/nlp";
+
+import "nlp/nlp.proto";
+
+service NLPService {
+  rpc AnalyzeText (AnalyzeTextRequest) returns (AnalyzeTextResponse);
+  rpc Geocode (GeocodeRequest) returns (GeocodeResponse);
+}

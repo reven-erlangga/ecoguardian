@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package twitter;
+
+option go_package = "github.com/ecoguard/protobuf/twitter";
+
+import "twitter/twitter.proto";
+import "common/common.proto";
+
+service TwitterService {
+  rpc IngestTweet (IngestTweetRequest) returns (IngestTweetResponse);
+  rpc GetTweet (GetTweetRequest) returns (Tweet);
+  rpc QueryTweets (QueryTweetsRequest) returns (QueryTweetsResponse);
+}
+
+message IngestTweetRequest {
+  string tweet_id = 1;
+  string text = 2;
+  string author = 3;
+  string author_username = 4;
+  repeated string media_urls = 5;
+  common.Timestamp created_at = 6;
+  map<string, string> metadata = 7;
+}
+
+message IngestTweetResponse {
+  string id = 1;
+}
+
+message GetTweetRequest {
+  string id = 1;
+}

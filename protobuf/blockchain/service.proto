@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package blockchain;
+
+option go_package = "github.com/ecoguard/protobuf/blockchain";
+
+import "common/common.proto";
+import "blockchain/blockchain.proto";
+
+service BlockchainService {
+  rpc RecordClassification (RecordClassificationRequest) returns (RecordResponse);
+  rpc RecordResolution (RecordResolutionRequest) returns (RecordResponse);
+  rpc GetHistory (GetHistoryRequest) returns (GetHistoryResponse);
+  rpc VerifyChain (common.Empty) returns (VerifyResponse);
+}
