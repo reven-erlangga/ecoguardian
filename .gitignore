@@ -61,3 +61,11 @@ Thumbs.db
 
 # ─── Docker ──────────────────────────────────────────────
 **/target/
+
+# ─── Build artifacts / caches ───────────────────────────
+handbook/docs/.vitepress/cache/
+frontend/test-results/
+infra/gateway/.mesh/
+.pytest_cache/
+**/.pytest_cache/
+.eslintcache
