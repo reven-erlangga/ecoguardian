@@ -16,14 +16,14 @@ spec:
       containers:
         - name: issue
           image: ecoguard/issue-service:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 50057
           env:
             - name: GRPC_PORT
               value: "50057"
             - name: MONGODB_URI
-              value: "mongodb://mongodb:27017"
+              value: "mongodb://mongo-twitter:27017"
           livenessProbe:
             tcpSocket:
               port: 50057

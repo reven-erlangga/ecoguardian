@@ -44,6 +44,11 @@ class NLPServiceStub:
                 request_serializer=nlp_dot_nlp__pb2.GeocodeRequest.SerializeToString,
                 response_deserializer=nlp_dot_nlp__pb2.GeocodeResponse.FromString,
                 _registered_method=True)
+        self.GenerateReply = channel.unary_unary(
+                '/nlp.NLPService/GenerateReply',
+                request_serializer=nlp_dot_nlp__pb2.GenerateReplyRequest.SerializeToString,
+                response_deserializer=nlp_dot_nlp__pb2.GenerateReplyResponse.FromString,
+                _registered_method=True)
 
 
 class NLPServiceServicer:
@@ -61,6 +66,12 @@ class NLPServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GenerateReply(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_NLPServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -73,6 +84,11 @@ def add_NLPServiceServicer_to_server(servicer, server):
                     servicer.Geocode,
                     request_deserializer=nlp_dot_nlp__pb2.GeocodeRequest.FromString,
                     response_serializer=nlp_dot_nlp__pb2.GeocodeResponse.SerializeToString,
+            ),
+            'GenerateReply': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateReply,
+                    request_deserializer=nlp_dot_nlp__pb2.GenerateReplyRequest.FromString,
+                    response_serializer=nlp_dot_nlp__pb2.GenerateReplyResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -129,6 +145,33 @@ class NLPService:
             '/nlp.NLPService/Geocode',
             nlp_dot_nlp__pb2.GeocodeRequest.SerializeToString,
             nlp_dot_nlp__pb2.GeocodeResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GenerateReply(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/nlp.NLPService/GenerateReply',
+            nlp_dot_nlp__pb2.GenerateReplyRequest.SerializeToString,
+            nlp_dot_nlp__pb2.GenerateReplyResponse.FromString,
             options,
             channel_credentials,
             insecure,

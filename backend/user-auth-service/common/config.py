@@ -1,4 +1,16 @@
 import os
+from .vault import read_secret
+
+
+def _resolve_jwt_secret() -> str:
+    """Chain: env var → Vault → local fallback."""
+    val = os.getenv("JWT_SECRET")
+    if val:
+        return val
+    vault_val = read_secret("ecoguard/db", "jwt-secret")
+    if vault_val:
+        return vault_val
+    return "ecoguard-local-dev-fallback-32chars!!!"
 
 
 class Config:
@@ -7,6 +19,7 @@ class Config:
         "DATABASE_URL",
         "postgresql://ecoguard:ecoguard_dev@localhost:5432/ecoguard_user",
     )
-    JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-key")
+    JWT_SECRET = _resolve_jwt_secret()
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-    JWT_EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", "24"))
+    JWT_EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", "1"))
+    REFRESH_TOKEN_EXPIRY_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRY_DAYS", "7"))

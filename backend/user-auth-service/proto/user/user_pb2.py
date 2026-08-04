@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from common import common_pb2 as common_dot_common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fuser/user.proto\x12\x04user\x1a\x13\x63ommon/common.proto\"\x8f\x01\n\x04User\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\t\x12\x0c\n\x04role\x18\x04 \x01(\t\x12%\n\ncreated_at\x18\x05 \x01(\x0b\x32\x11.common.Timestamp\x12%\n\nupdated_at\x18\x06 \x01(\x0b\x32\x11.common.Timestamp\"D\n\x0fRegisterRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\";\n\x10RegisterResponse\x12\x18\n\x04user\x18\x01 \x01(\x0b\x32\n.user.User\x12\r\n\x05token\x18\x02 \x01(\t\"/\n\x0cLoginRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"8\n\rLoginResponse\x12\x18\n\x04user\x18\x01 \x01(\x0b\x32\n.user.User\x12\r\n\x05token\x18\x02 \x01(\t\"\x1c\n\x0eGetUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\"@\n\x11UpdateUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\tB#Z!github.com/ecoguard/protobuf/userb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fuser/user.proto\x12\x04user\x1a\x13\x63ommon/common.proto\"\x8f\x01\n\x04User\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\t\x12\x0c\n\x04role\x18\x04 \x01(\t\x12%\n\ncreated_at\x18\x05 \x01(\x0b\x32\x11.common.Timestamp\x12%\n\nupdated_at\x18\x06 \x01(\x0b\x32\x11.common.Timestamp\"D\n\x0fRegisterRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"R\n\x10RegisterResponse\x12\x18\n\x04user\x18\x01 \x01(\x0b\x32\n.user.User\x12\r\n\x05token\x18\x02 \x01(\t\x12\x15\n\rrefresh_token\x18\x03 \x01(\t\"/\n\x0cLoginRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"O\n\rLoginResponse\x12\x18\n\x04user\x18\x01 \x01(\x0b\x32\n.user.User\x12\r\n\x05token\x18\x02 \x01(\t\x12\x15\n\rrefresh_token\x18\x03 \x01(\t\"\x1c\n\x0eGetUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\"@\n\x11UpdateUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\tB#Z!github.com/ecoguard/protobuf/userb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -38,13 +38,13 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_REGISTERREQUEST']._serialized_start=192
   _globals['_REGISTERREQUEST']._serialized_end=260
   _globals['_REGISTERRESPONSE']._serialized_start=262
-  _globals['_REGISTERRESPONSE']._serialized_end=321
-  _globals['_LOGINREQUEST']._serialized_start=323
-  _globals['_LOGINREQUEST']._serialized_end=370
-  _globals['_LOGINRESPONSE']._serialized_start=372
-  _globals['_LOGINRESPONSE']._serialized_end=428
-  _globals['_GETUSERREQUEST']._serialized_start=430
-  _globals['_GETUSERREQUEST']._serialized_end=458
-  _globals['_UPDATEUSERREQUEST']._serialized_start=460
-  _globals['_UPDATEUSERREQUEST']._serialized_end=524
+  _globals['_REGISTERRESPONSE']._serialized_end=344
+  _globals['_LOGINREQUEST']._serialized_start=346
+  _globals['_LOGINREQUEST']._serialized_end=393
+  _globals['_LOGINRESPONSE']._serialized_start=395
+  _globals['_LOGINRESPONSE']._serialized_end=474
+  _globals['_GETUSERREQUEST']._serialized_start=476
+  _globals['_GETUSERREQUEST']._serialized_end=504
+  _globals['_UPDATEUSERREQUEST']._serialized_start=506
+  _globals['_UPDATEUSERREQUEST']._serialized_end=570
 # @@protoc_insertion_point(module_scope)

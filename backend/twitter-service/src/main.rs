@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
+mod asset_client;
 mod blockchain_client;
 mod classify;
 mod common;
@@ -20,11 +21,13 @@ use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 use tokio::sync::Mutex;
 
+use crate::asset_client::AssetClient;
 use crate::blockchain_client::BlockchainClient;
 use crate::common::config::Config;
 use crate::common::mongo;
 use crate::grpc_client::ClassificationClient;
 use crate::nlp_client::NlpClient;
+use crate::common::vault::{read_secret, write_secret};
 use crate::protos::twitter::twitter_service_server::TwitterServiceServer;
 use crate::rabbitmq::publisher;
 
@@ -36,6 +39,7 @@ pub struct AppState {
     pub classify_client: Arc<Mutex<ClassificationClient>>,
     pub nlp_client: Arc<Mutex<NlpClient>>,
     pub blockchain_client: Option<Arc<Mutex<BlockchainClient>>>,
+    pub asset_client: Option<Arc<Mutex<AssetClient>>>,
 }
 
 type SharedState = Arc<AppState>;
@@ -51,6 +55,8 @@ struct TriggerRequest {
     author: String,
     author_username: String,
     media_urls: Vec<String>,
+    #[serde(default)]
+    parent_tweet_id: Option<String>,
     #[serde(default)]
     metadata: HashMap<String, String>,
 }
@@ -74,6 +80,22 @@ struct ErrorResponse {
     error: String,
 }
 
+// ─── Twitter Credentials ────────────────────────────────────
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct TwitterCredentials {
+    api_key: String,
+    api_secret: String,
+    #[serde(default)]
+    bearer_token: Option<String>,
+}
+
+#[derive(Serialize)]
+struct CredentialsStatus {
+    configured: bool,
+}
+
 // ─── Helpers ─────────────────────────────────────────────────
 
 /// ponytail: detect image format from URL extension (case-insensitive)
@@ -87,7 +109,51 @@ fn guess_format(url: &str) -> &str {
     }
 }
 
-// ─── Route ───────────────────────────────────────────────────
+// ─── Routes ──────────────────────────────────────────────────
+
+#[get("/health")]
+fn health() -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "status": "ok" }))
+}
+
+// TODO: Remove — dummy ingest endpoint untuk testing, diganti Twitter Watcher
+#[post("/ingest", format = "json", data = "<req>")]
+async fn ingest_dummy(
+    req: Json<TriggerRequest>,
+    state: &State<SharedState>,
+) -> Result<Json<serde_json::Value>, Json<ErrorResponse>> {
+    use crate::protos::twitter::IngestTweetRequest;
+
+    let repo = ingest::repository::TweetRepository::new(&state.db);
+    let ingest_req = IngestTweetRequest {
+        tweet_id: req.tweet_id.clone(),
+        text: req.text.clone(),
+        author: req.author.clone(),
+        author_username: req.author_username.clone(),
+        media_urls: req.media_urls.clone(),
+        parent_tweet_id: req.parent_tweet_id.clone().unwrap_or_default(),
+        metadata: req.metadata.clone(),
+        created_at: None,
+    };
+
+    let id = ingest::service::ingest_tweet(
+        &repo,
+        &state.rabbit_channel,
+        &state.classify_client,
+        &state.nlp_client,
+        &state.blockchain_client,
+        &state.asset_client,
+        &ingest_req,
+    )
+    .await
+    .map_err(|e| Json(ErrorResponse { error: e }))?;
+
+    Ok(Json(serde_json::json!({
+        "id": id,
+        "tweet_id": req.tweet_id,
+        "status": "ingested"
+    })))
+}
 
 #[post("/trigger-classify", format = "json", data = "<req>")]
 async fn trigger_classify(
@@ -146,6 +212,40 @@ async fn trigger_classify(
     }))
 }
 
+// ─── Settings ────────────────────────────────────────────────
+
+/// Save Twitter API credentials to Vault.
+#[post("/settings/twitter", format = "json", data = "<creds>")]
+async fn save_twitter_settings(
+    creds: Json<TwitterCredentials>,
+) -> Result<Json<serde_json::Value>, Json<ErrorResponse>> {
+    let path = "ecoguard/twitter";
+
+    let ok = write_secret(path, "api-key", &creds.api_key)
+        && write_secret(path, "api-secret", &creds.api_secret);
+
+    if !ok {
+        return Err(Json(ErrorResponse {
+            error: "Failed to save credentials to Vault — is Vault running?".into(),
+        }));
+    }
+
+    // Save optional bearer token
+    if let Some(ref bt) = creds.bearer_token {
+        write_secret(path, "bearer-token", bt);
+    }
+
+    Ok(Json(serde_json::json!({ "status": "saved" })))
+}
+
+/// Check whether Twitter credentials are configured in Vault.
+#[get("/settings/twitter")]
+async fn twitter_settings_status() -> Json<CredentialsStatus> {
+    let configured = read_secret("ecoguard/twitter", "api-key").is_some()
+        && read_secret("ecoguard/twitter", "api-secret").is_some();
+    Json(CredentialsStatus { configured })
+}
+
 // ─── Launch ──────────────────────────────────────────────────
 
 #[rocket::main]
@@ -198,6 +298,18 @@ async fn main() -> Result<(), rocket::Error> {
         }
     };
 
+    // --- Asset gRPC Client (best-effort, skip jika gak reachable) ---
+    let asset_client = match AssetClient::new(config.asset_grpc_addr.clone()).await {
+        Ok(c) => {
+            println!("✅ Connected to Asset Service");
+            Some(Arc::new(Mutex::new(c)))
+        }
+        Err(e) => {
+            eprintln!("⚠️  Asset Service not available: {e}");
+            None
+        }
+    };
+
     // --- NLP gRPC Client (retry 30s untuk DNS) ---
     let nlp_client = {
         let mut client = None;
@@ -225,6 +337,7 @@ async fn main() -> Result<(), rocket::Error> {
         classify_client,
         nlp_client,
         blockchain_client,
+        asset_client,
     });
 
     // --- gRPC Server ---
@@ -255,7 +368,7 @@ async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
         .configure(rocket_config)
         .manage(app_state)
-        .mount("/", routes![trigger_classify])
+        .mount("/", routes![health, ingest_dummy, trigger_classify, save_twitter_settings, twitter_settings_status])
         .launch()
         .await?;
 

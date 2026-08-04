@@ -1,38 +1,105 @@
+@import "@fontsource-variable/geist";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 48 100% 95%;
+    /* ponytail: HSL triplet (bukan oklch) — tailwind config & .neo-* pakai hsl(var(--x)) */
+    --background: 0 0% 100%;
     --foreground: 0 0% 0%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
-    --primary: 221 83% 53%;
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 142 71% 45%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 32 100% 50%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --accent: 0 0% 96%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --muted: 0 0% 90%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
     --border: 0 0% 0%;
     --input: 0 0% 0%;
-    --ring: 221 83% 53%;
-    --radius: 0px;
+    --ring: 0 0% 0%;
+    --radius: 0.625rem;
+
+    /* neobrutalism design tokens */
+    --box-shadow-x: 4px;
+    --box-shadow-y: 4px;
+    --border-radius: 5px;
+    --main: 221 83% 53%;
+    --main-foreground: 0 0% 100%;
+    --secondary-background: 0 0% 100%;
+    --overlay: 0 0% 0% / 0.8;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --chart-1: 0 0% 85%;
+    --chart-2: 0 0% 45%;
+    --chart-3: 0 0% 35%;
+    --chart-4: 0 0% 30%;
+    --chart-5: 0 0% 20%;
+    --sidebar: 0 0% 98%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 0%;
+    --sidebar-ring: 0 0% 0%;
   }
-  * { border-color: hsl(var(--border)); }
+  * { border-color: hsl(var(--border));
+    @apply border-border outline-ring/50; }
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-background text-foreground;
+  }
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+  }
+  .dark {
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 90%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 70% 50%;
+    --border: 0 0% 100% / 10%;
+    --input: 0 0% 100% / 15%;
+    --ring: 0 0% 45%;
+    --chart-1: 0 0% 85%;
+    --chart-2: 0 0% 45%;
+    --chart-3: 0 0% 35%;
+    --chart-4: 0 0% 30%;
+    --chart-5: 0 0% 20%;
+    --sidebar: 0 0% 15%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 240 6% 65%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 20%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 100% / 10%;
+    --sidebar-ring: 0 0% 45%;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
 @layer components {
-  .neo-shadow { box-shadow: 4px 4px 0px 0px hsl(var(--foreground)); }
-  .neo-shadow-sm { box-shadow: 2px 2px 0px 0px hsl(var(--foreground)); }
-  .neo-border { border: 2px solid hsl(var(--foreground)); }
+  /* ponytail: custom CSS classes removed — use neobrutalism utility classes directly:
+     border-2 border-border rounded-base  (replaces neo-border)
+     shadow-shadow                      (replaces neo-shadow) */
 }

@@ -1,9 +1,25 @@
-# ─── Training (data besar) ───────────────────────────────
-training/dataset/
-training/output/
-training/.venv/
-training/venv/
-training/__pycache__/
+# ─── Dependencies & Builds ─────────────────────────────────
+node_modules/
+**/node_modules/
+dist/
+.astro/
+build/
+.playwright-mcp/
+nul
+frontend/nul
+
+# ─── Research (data besar) ───────────────────────────────
+research/training/collections/
+research/training/datasets/
+research/training/dataset/
+research/training/output/
+research/training/.venv/
+research/training/venv/
+research/training/__pycache__/
+research/scraping/data/
+research/scraping/venv/
+research/scraping/.env
+research/scraping/__pycache__/
 
 # ─── Model ONNX / PyTorch ────────────────────────────────
 *.onnx

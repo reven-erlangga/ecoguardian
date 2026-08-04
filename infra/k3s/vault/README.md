@@ -70,6 +70,11 @@ kubectl -n vault exec vault-0 -- vault kv put secret/ecoguard/db \
   mongo-twitter-uri="mongodb://mongo-twitter:27017/ecoguard_twitter" \
   rabbitmq-uri="amqp://guest:guest@rabbitmq:5672" \
   jwt-secret="<real-jwt-secret>"
+
+kubectl -n vault exec vault-0 -- vault kv patch secret/ecoguard/db \
+  imagekit-public-key="your-imagekit-public-key" \
+  imagekit-private-key="your-imagekit-private-key" \
+  imagekit-url-endpoint="https://ik.imagekit.io/your-id"
 ```
 
 ### 8. Apply K8s Secret

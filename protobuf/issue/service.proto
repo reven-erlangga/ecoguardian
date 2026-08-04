@@ -11,6 +11,8 @@ message ListIssuesRequest {
   string status = 1;
   string type = 2;
   common.Pagination pagination = 3;
+  string keyword = 4;
+  int64 created_after = 5;
 }
 
 message ListIssuesResponse {
@@ -30,7 +32,7 @@ message ResolveIssueRequest {
   string issue_id = 1;
   string admin_id = 2;
   string notes = 3;
-  string image_hash = 4;
+  repeated string image_hashes = 4;
 }
 
 message ResolveIssueResponse {

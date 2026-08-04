@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dashboard;
+
+option go_package = "github.com/ecoguard/protobuf/dashboard";
+
+import "dashboard/dashboard.proto";
+
+message DashboardEmpty {}
+
+service DashboardService {
+  rpc GetStats (DashboardEmpty) returns (DashboardStats);
+}

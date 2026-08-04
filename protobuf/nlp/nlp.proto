@@ -24,3 +24,14 @@ message GeocodeResponse {
   double lon = 2;
   string display_name = 3;
 }
+
+message GenerateReplyRequest {
+  string tweet_text = 1;
+  repeated string missing_fields = 2;
+  string classification_label = 3;
+  float classification_confidence = 4;
+}
+
+message GenerateReplyResponse {
+  string message = 1;
+}

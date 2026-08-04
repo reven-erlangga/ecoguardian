@@ -9,7 +9,8 @@ export function useNotifList(p: NotifListProps) {
   function groupByDate(): GroupedNotifs[] {
     const map = new Map<string, Notification[]>();
     for (const n of p.notifications) {
-      const date = n.createdAt.slice(0, 10);
+      const ts = typeof n.createdAt === 'object' ? n.createdAt.seconds * 1000 : n.createdAt;
+      const date = new Date(ts).toISOString().slice(0, 10);
       if (!map.has(date)) map.set(date, []);
       map.get(date)!.push(n);
     }

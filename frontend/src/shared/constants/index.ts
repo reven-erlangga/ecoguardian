@@ -6,3 +6,4 @@ export const LABELS = [
 
 export const PAGE_SIZE = 20;
 export const GRAPHQL_URL = 'http://localhost:4000/graphql';
+export const TWITTER_SERVICE_URL = import.meta.env.PUBLIC_TWITTER_SERVICE_URL ?? 'http://localhost:8000';

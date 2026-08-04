@@ -46,14 +46,14 @@ class DummyEngine:
 def test_preprocess_returns_nchw_shape():
     engine = DummyEngine()
     svc = ClassificationService(engine)  # type: ignore[arg-type]
-    result = svc._preprocess(_dummy_image_bytes(), "jpeg")
+    result = svc._preprocess(_dummy_image_bytes())
     assert result.shape == (1, 3, 224, 224), f"Expected NCHW, got {result.shape}"
 
 
 def test_preprocess_returns_float32():
     engine = DummyEngine()
     svc = ClassificationService(engine)  # type: ignore[arg-type]
-    result = svc._preprocess(_dummy_image_bytes(), "jpeg")
+    result = svc._preprocess(_dummy_image_bytes())
     assert result.dtype == np.float32
 
 

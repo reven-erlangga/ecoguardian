@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: handbook
+  namespace: ecoguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: handbook
+  template:
+    metadata:
+      labels:
+        app: handbook
+    spec:
+      containers:
+        - name: handbook
+          image: ecoguard/handbook:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: handbook
+  namespace: ecoguard
+spec:
+  selector:
+    app: handbook
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30402
+  type: NodePort

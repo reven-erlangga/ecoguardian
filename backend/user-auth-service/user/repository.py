@@ -1,4 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
+
+import psycopg2
 
 from common.db import get_connection, return_connection
 from user.models import User
@@ -74,7 +76,7 @@ def get_user_by_email(email: str) -> dict | None:
 
 
 def update_user(id: str, email: str, username: str) -> dict | None:
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     conn = get_connection()
     try:
         with conn.cursor() as cur:
@@ -89,6 +91,107 @@ def update_user(id: str, email: str, username: str) -> dict | None:
             row = cur.fetchone()
             conn.commit()
             return _user_to_response(_row_to_user(row)) if row else None
+    except psycopg2.errors.UniqueViolation:
+        conn.rollback()
+        raise ValueError("Email already in use by another account")
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        return_connection(conn)
+
+
+def count_users() -> int:
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM users")
+            return cur.fetchone()[0]
+    finally:
+        return_connection(conn)
+
+
+# ── Refresh tokens ──────────────────────────────────────────
+
+
+def store_refresh_token(user_id: str, token_hash: str, expires_at: datetime) -> None:
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
+                VALUES (%s, %s, %s)
+                """,
+                (user_id, token_hash, expires_at),
+            )
+            conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        return_connection(conn)
+
+
+def get_valid_refresh_token(token_hash: str) -> dict | None:
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, user_id, token_hash, expires_at, revoked, created_at
+                FROM refresh_tokens
+                WHERE token_hash = %s AND revoked = FALSE AND expires_at > NOW()
+                """,
+                (token_hash,),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        return_connection(conn)
+
+
+def revoke_refresh_token(token_id: str) -> None:
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE refresh_tokens SET revoked = TRUE WHERE id = %s",
+                (token_id,),
+            )
+            conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        return_connection(conn)
+
+
+def revoke_refresh_token_by_hash(token_hash: str) -> None:
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE refresh_tokens SET revoked = TRUE WHERE token_hash = %s",
+                (token_hash,),
+            )
+            conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        return_connection(conn)
+
+
+def revoke_all_user_refresh_tokens(user_id: str) -> None:
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = %s",
+                (user_id,),
+            )
+            conn.commit()
     except Exception:
         conn.rollback()
         raise

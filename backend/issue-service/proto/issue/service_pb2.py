@@ -26,7 +26,7 @@ from issue import issue_pb2 as issue_dot_issue__pb2
 from common import common_pb2 as common_dot_common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13issue/service.proto\x12\x05issue\x1a\x11issue/issue.proto\x1a\x13\x63ommon/common.proto\"Y\n\x11ListIssuesRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\x12&\n\npagination\x18\x03 \x01(\x0b\x32\x12.common.Pagination\"b\n\x12ListIssuesResponse\x12\x1c\n\x06issues\x18\x01 \x03(\x0b\x32\x0c.issue.Issue\x12.\n\npagination\x18\x02 \x01(\x0b\x32\x1a.common.PaginationResponse\"\x1d\n\x0fGetIssueRequest\x12\n\n\x02id\x18\x01 \x01(\t\"/\n\x10GetIssueResponse\x12\x1b\n\x05issue\x18\x01 \x01(\x0b\x32\x0c.issue.Issue\"\\\n\x13ResolveIssueRequest\x12\x10\n\x08issue_id\x18\x01 \x01(\t\x12\x10\n\x08\x61\x64min_id\x18\x02 \x01(\t\x12\r\n\x05notes\x18\x03 \x01(\t\x12\x12\n\nimage_hash\x18\x04 \x01(\t\"8\n\x14ResolveIssueResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"8\n\x14ListClustersResponse\x12 \n\x08\x63lusters\x18\x01 \x03(\x0b\x32\x0e.issue.Cluster\",\n\rWordCloudItem\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\";\n\x14GetWordCloudResponse\x12#\n\x05items\x18\x01 \x03(\x0b\x32\x14.issue.WordCloudItem2\xcf\x02\n\x0cIssueService\x12\x41\n\nListIssues\x12\x18.issue.ListIssuesRequest\x1a\x19.issue.ListIssuesResponse\x12;\n\x08GetIssue\x12\x16.issue.GetIssueRequest\x1a\x17.issue.GetIssueResponse\x12G\n\x0cResolveIssue\x12\x1a.issue.ResolveIssueRequest\x1a\x1b.issue.ResolveIssueResponse\x12:\n\x0cListClusters\x12\r.common.Empty\x1a\x1b.issue.ListClustersResponse\x12:\n\x0cGetWordCloud\x12\r.common.Empty\x1a\x1b.issue.GetWordCloudResponseB$Z\"github.com/ecoguard/protobuf/issueb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13issue/service.proto\x12\x05issue\x1a\x11issue/issue.proto\x1a\x13\x63ommon/common.proto\"\x81\x01\n\x11ListIssuesRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\x12&\n\npagination\x18\x03 \x01(\x0b\x32\x12.common.Pagination\x12\x0f\n\x07keyword\x18\x04 \x01(\t\x12\x15\n\rcreated_after\x18\x05 \x01(\x03\"b\n\x12ListIssuesResponse\x12\x1c\n\x06issues\x18\x01 \x03(\x0b\x32\x0c.issue.Issue\x12.\n\npagination\x18\x02 \x01(\x0b\x32\x1a.common.PaginationResponse\"\x1d\n\x0fGetIssueRequest\x12\n\n\x02id\x18\x01 \x01(\t\"/\n\x10GetIssueResponse\x12\x1b\n\x05issue\x18\x01 \x01(\x0b\x32\x0c.issue.Issue\"^\n\x13ResolveIssueRequest\x12\x10\n\x08issue_id\x18\x01 \x01(\t\x12\x10\n\x08\x61\x64min_id\x18\x02 \x01(\t\x12\r\n\x05notes\x18\x03 \x01(\t\x12\x14\n\x0cimage_hashes\x18\x04 \x03(\t\"8\n\x14ResolveIssueResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"8\n\x14ListClustersResponse\x12 \n\x08\x63lusters\x18\x01 \x03(\x0b\x32\x0e.issue.Cluster\",\n\rWordCloudItem\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\";\n\x14GetWordCloudResponse\x12#\n\x05items\x18\x01 \x03(\x0b\x32\x14.issue.WordCloudItem2\xcf\x02\n\x0cIssueService\x12\x41\n\nListIssues\x12\x18.issue.ListIssuesRequest\x1a\x19.issue.ListIssuesResponse\x12;\n\x08GetIssue\x12\x16.issue.GetIssueRequest\x1a\x17.issue.GetIssueResponse\x12G\n\x0cResolveIssue\x12\x1a.issue.ResolveIssueRequest\x1a\x1b.issue.ResolveIssueResponse\x12:\n\x0cListClusters\x12\r.common.Empty\x1a\x1b.issue.ListClustersResponse\x12:\n\x0cGetWordCloud\x12\r.common.Empty\x1a\x1b.issue.GetWordCloudResponseB$Z\"github.com/ecoguard/protobuf/issueb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,24 +34,24 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'issue.service_pb2', _global
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\"github.com/ecoguard/protobuf/issue'
-  _globals['_LISTISSUESREQUEST']._serialized_start=70
-  _globals['_LISTISSUESREQUEST']._serialized_end=159
-  _globals['_LISTISSUESRESPONSE']._serialized_start=161
-  _globals['_LISTISSUESRESPONSE']._serialized_end=259
-  _globals['_GETISSUEREQUEST']._serialized_start=261
-  _globals['_GETISSUEREQUEST']._serialized_end=290
-  _globals['_GETISSUERESPONSE']._serialized_start=292
-  _globals['_GETISSUERESPONSE']._serialized_end=339
-  _globals['_RESOLVEISSUEREQUEST']._serialized_start=341
-  _globals['_RESOLVEISSUEREQUEST']._serialized_end=433
-  _globals['_RESOLVEISSUERESPONSE']._serialized_start=435
-  _globals['_RESOLVEISSUERESPONSE']._serialized_end=491
-  _globals['_LISTCLUSTERSRESPONSE']._serialized_start=493
-  _globals['_LISTCLUSTERSRESPONSE']._serialized_end=549
-  _globals['_WORDCLOUDITEM']._serialized_start=551
-  _globals['_WORDCLOUDITEM']._serialized_end=595
-  _globals['_GETWORDCLOUDRESPONSE']._serialized_start=597
-  _globals['_GETWORDCLOUDRESPONSE']._serialized_end=656
-  _globals['_ISSUESERVICE']._serialized_start=659
-  _globals['_ISSUESERVICE']._serialized_end=994
+  _globals['_LISTISSUESREQUEST']._serialized_start=71
+  _globals['_LISTISSUESREQUEST']._serialized_end=200
+  _globals['_LISTISSUESRESPONSE']._serialized_start=202
+  _globals['_LISTISSUESRESPONSE']._serialized_end=300
+  _globals['_GETISSUEREQUEST']._serialized_start=302
+  _globals['_GETISSUEREQUEST']._serialized_end=331
+  _globals['_GETISSUERESPONSE']._serialized_start=333
+  _globals['_GETISSUERESPONSE']._serialized_end=380
+  _globals['_RESOLVEISSUEREQUEST']._serialized_start=382
+  _globals['_RESOLVEISSUEREQUEST']._serialized_end=476
+  _globals['_RESOLVEISSUERESPONSE']._serialized_start=478
+  _globals['_RESOLVEISSUERESPONSE']._serialized_end=534
+  _globals['_LISTCLUSTERSRESPONSE']._serialized_start=536
+  _globals['_LISTCLUSTERSRESPONSE']._serialized_end=592
+  _globals['_WORDCLOUDITEM']._serialized_start=594
+  _globals['_WORDCLOUDITEM']._serialized_end=638
+  _globals['_GETWORDCLOUDRESPONSE']._serialized_start=640
+  _globals['_GETWORDCLOUDRESPONSE']._serialized_end=699
+  _globals['_ISSUESERVICE']._serialized_start=702
+  _globals['_ISSUESERVICE']._serialized_end=1037
 # @@protoc_insertion_point(module_scope)

@@ -21,10 +21,18 @@ message IngestTweetRequest {
   repeated string media_urls = 5;
   common.Timestamp created_at = 6;
   map<string, string> metadata = 7;
+  string parent_tweet_id = 8;  // for reply/continuation tracking
 }
 
 message IngestTweetResponse {
   string id = 1;
+  repeated ValidationMessage validation = 2;  // auto-reply messages
+}
+
+message ValidationMessage {
+  string field = 1;      // "media", "location", "classification"
+  string message = 2;    // human-readable reply text
+  string severity = 3;   // "error", "warning", "info"
 }
 
 message GetTweetRequest {

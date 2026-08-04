@@ -3,6 +3,29 @@ import { test, expect } from '@playwright/test';
 const BASE_URL = 'http://localhost:4321';
 const GRAPHQL_URL = 'http://localhost:4000/graphql';
 
+test.describe('Auth Flow', () => {
+  test('Login flow works', async ({ page }) => {
+    await page.goto(BASE_URL + '/login');
+    await page.fill('input[type="email"]', 'test@ecoguard.dev');
+    await page.fill('input[type="password"]', 'test123');
+    await page.click('button:has-text("Masuk")');
+    // Should redirect to dashboard on success
+    await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+    // Profile card visible in sidebar
+    await expect(page.getByText('test@ecoguard.dev')).toBeVisible();
+  });
+
+  test('Logout clears session', async ({ page }) => {
+    await page.goto(BASE_URL + '/login');
+    await page.fill('input[type="email"]', 'test@ecoguard.dev');
+    await page.fill('input[type="password"]', 'test123');
+    await page.click('button:has-text("Masuk")');
+    await page.waitForURL(/\/dashboard/);
+    await page.click('button:has-text("Logout")');
+    await expect(page).toHaveURL(/\/login/);
+  });
+});
+
 test.describe('Ecoguard Full Flow', () => {
 
   test('1. Landing redirects to dashboard', async ({ page }) => {

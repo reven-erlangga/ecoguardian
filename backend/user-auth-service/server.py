@@ -47,7 +47,9 @@ class UserServiceServicer(service_pb2_grpc.UserServiceServicer):
                 password=request.password,
             )
             return user_pb2.RegisterResponse(
-                user=_user_to_proto(result["user"]), token=result["token"]
+                user=_user_to_proto(result["user"]),
+                token=result["token"],
+                refresh_token=result["refresh_token"],
             )
         except ValueError as e:
             context.set_code(grpc.StatusCode.ALREADY_EXISTS)
@@ -58,7 +60,9 @@ class UserServiceServicer(service_pb2_grpc.UserServiceServicer):
         try:
             result = auth_service.login(email=request.email, password=request.password)
             return user_pb2.LoginResponse(
-                user=_user_to_proto(result["user"]), token=result["token"]
+                user=_user_to_proto(result["user"]),
+                token=result["token"],
+                refresh_token=result["refresh_token"],
             )
         except ValueError as e:
             context.set_code(grpc.StatusCode.UNAUTHENTICATED)
@@ -74,14 +78,23 @@ class UserServiceServicer(service_pb2_grpc.UserServiceServicer):
         return _user_to_proto(user)
 
     def UpdateUser(self, request, context):
-        user = user_service.update_user(
-            id=request.id, email=request.email, username=request.username
-        )
-        if not user:
-            context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details("User not found")
+        try:
+            user = user_service.update_user(
+                id=request.id, email=request.email, username=request.username
+            )
+            if not user:
+                context.set_code(grpc.StatusCode.NOT_FOUND)
+                context.set_details("User not found")
+                return user_pb2.User()
+            return _user_to_proto(user)
+        except ValueError as e:
+            context.set_code(grpc.StatusCode.ALREADY_EXISTS)
+            context.set_details(str(e))
             return user_pb2.User()
-        return _user_to_proto(user)
+
+    def GetUserCount(self, request, context):
+        count = user_service.count_users()
+        return service_pb2.GetUserCountResponse(count=count)
 
 
 # ─── AuthService ───────────────────────────────────────────
@@ -92,7 +105,10 @@ class AuthServiceServicer(service_pb2_grpc.AuthServiceServicer):
         try:
             payload = auth_service.validate_token(request.token)
             return service_pb2.ValidateTokenResponse(
-                user_id=payload["user_id"], role=payload["role"]
+                user_id=payload["user_id"],
+                role=payload["role"],
+                email=payload["email"],
+                username=payload["username"],
             )
         except Exception as e:
             context.set_code(grpc.StatusCode.UNAUTHENTICATED)
@@ -101,12 +117,24 @@ class AuthServiceServicer(service_pb2_grpc.AuthServiceServicer):
 
     def RefreshToken(self, request, context):
         try:
-            result = auth_service.refresh_token(request.token)
-            return service_pb2.RefreshTokenResponse(token=result["token"])
+            result = auth_service.refresh_token(request.refresh_token)
+            return service_pb2.RefreshTokenResponse(
+                token=result["token"],
+                refresh_token=result["refresh_token"],
+            )
         except Exception as e:
             context.set_code(grpc.StatusCode.UNAUTHENTICATED)
             context.set_details(str(e))
             return service_pb2.RefreshTokenResponse()
+
+    def Logout(self, request, context):
+        try:
+            auth_service.logout(request.refresh_token)
+            return service_pb2.LogoutResponse(success=True)
+        except Exception as e:
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details(str(e))
+            return service_pb2.LogoutResponse()
 
 
 # ─── Main ─────────────────────────────────────────────────

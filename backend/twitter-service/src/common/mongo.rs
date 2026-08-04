@@ -42,6 +42,10 @@ pub struct TweetDoc {
     pub classification: Option<ClassificationResult>,
     pub created_at: DateTime<Utc>,
     pub metadata: HashMap<String, String>,
+    pub parent_tweet_id: Option<String>,       // reply chain tracking
+    pub has_images: bool,
+    pub has_location: bool,
+    pub validation_status: Vec<String>,         // "needs_images", "needs_location", "ok"
 }
 
 // ─── Issue document (auto-created after classification) ───────
@@ -57,7 +61,8 @@ pub struct IssueLocation {
 pub struct IssueResolution {
     pub admin_id: String,
     pub notes: String,
-    pub image_hash: String,
+    #[serde(rename = "image_hash")]
+    pub image_url: String,
     pub resolved_at: i64,
 }
 
@@ -73,7 +78,8 @@ pub struct IssueDoc {
     pub location: Option<IssueLocation>,
     pub paraphrased_text: String,
     pub resolution: Option<IssueResolution>,
-    pub image_hash: String,
+    #[serde(rename = "image_hash")]
+    pub image_url: String,
     pub created_at: i64,
     pub resolved_at: Option<i64>,
 }

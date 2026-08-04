@@ -1,18 +1,31 @@
 from pymongo import MongoClient, ASCENDING, DESCENDING
 
+from features.clustering import ClusteringService
+
 
 class IssueRepository:
-    def __init__(self, mongo_uri: str):
+    def __init__(self, mongo_uri: str, eps_km: float = 7.0, min_samples: int = 3):
         self.client = MongoClient(mongo_uri)
         self.db = self.client["ecoguard_twitter"]
         self.issues = self.db["issues"]
+        self.eps_km = eps_km
+        self.min_samples = min_samples
 
-    def list_issues(self, status="", type_filter="", page=1, per_page=20):
+    def list_issues(self, status="", type_filter="", keyword="", created_after=0, page=1, per_page=20):
         query = {}
         if status:
             query["status"] = status
         if type_filter:
             query["type"] = type_filter
+        if keyword:
+            query["$or"] = [
+                {"paraphrased_text": {"$regex": keyword, "$options": "i"}},
+                {"type": {"$regex": keyword, "$options": "i"}},
+                {"tweet_id": {"$regex": keyword, "$options": "i"}},
+                {"location.address": {"$regex": keyword, "$options": "i"}},
+            ]
+        if created_after > 0:
+            query["created_at"] = {"$gte": created_after}
         total = self.issues.count_documents(query)
         items = list(
             self.issues.find(query)
@@ -27,20 +40,47 @@ class IssueRepository:
         return self.issues.find_one({"_id": issue_id})
 
     def list_clusters(self):
+        """Run DBSCAN clustering on all issues with valid locations."""
+        clustering = ClusteringService(eps_km=self.eps_km, min_samples=self.min_samples)
+        all_issues = list(self.issues.find({
+            "location": {"$ne": None},
+            "location.lat": {"$ne": None},
+            "location.lon": {"$ne": None},
+        }))
+        return clustering.cluster_from_db(all_issues)
+
+    def get_total_issues(self) -> int:
+        return self.issues.count_documents({})
+
+    def get_open_issues(self) -> int:
+        return self.issues.count_documents({"status": "open"})
+
+    def get_resolved_issues(self) -> int:
+        return self.issues.count_documents({"status": "resolved"})
+
+    def get_issues_by_type(self) -> dict[str, int]:
         pipeline = [
-            {"$match": {"location.address": {"$ne": None, "$ne": ""}}},
-            {
-                "$group": {
-                    "_id": "$location.address",
-                    "lat": {"$first": "$location.lat"},
-                    "lon": {"$first": "$location.lon"},
-                    "issue_count": {"$sum": 1},
-                    "types": {"$addToSet": "$type"},
-                }
-            },
-            {"$sort": {"issue_count": -1}},
+            {"$group": {"_id": "$type", "count": {"$sum": 1}}},
         ]
-        return list(self.issues.aggregate(pipeline))
+        result: dict[str, int] = {}
+        for item in self.issues.aggregate(pipeline):
+            t = item.get("_id") or "unknown"
+            result[t] = int(item.get("count", 0))
+        return result
+
+    def get_recent_issues(self, limit: int = 5) -> list[dict]:
+        cursor = self.issues.find().sort("created_at", DESCENDING).limit(limit)
+        return list(cursor)
+
+    def get_recent_tweets(self, limit: int = 5) -> list[dict]:
+        # ponytail: tweets dari service lain (twitter-service) — query DB langsung karena share MongoDB
+        tweets = self.db["tweets"]
+        cursor = tweets.find().sort("created_at", DESCENDING).limit(limit)
+        return list(cursor)
+
+    def get_total_tweets(self) -> int:
+        tweets = self.db["tweets"]
+        return tweets.count_documents({})
 
     def get_word_cloud(self) -> list[dict]:
         """Aggregate issue types + locations as word count items."""

@@ -1,10 +1,4 @@
-export interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  read: boolean;
-  createdAt: string;
-}
+import type { Notification } from '@shared/types/notification';
 
 export interface NotifListProps {
   notifications: Notification[];

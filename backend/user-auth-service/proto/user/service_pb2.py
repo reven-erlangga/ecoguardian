@@ -26,7 +26,7 @@ from user import user_pb2 as user_dot_user__pb2
 from common import common_pb2 as common_dot_common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12user/service.proto\x12\x04user\x1a\x0fuser/user.proto\x1a\x13\x63ommon/common.proto\"%\n\x14ValidateTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"6\n\x15ValidateTokenResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\"$\n\x13RefreshTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"%\n\x14RefreshTokenResponse\x12\r\n\x05token\x18\x01 \x01(\t2\xda\x01\n\x0bUserService\x12\x39\n\x08Register\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\x12\x30\n\x05Login\x12\x12.user.LoginRequest\x1a\x13.user.LoginResponse\x12+\n\x07GetUser\x12\x14.user.GetUserRequest\x1a\n.user.User\x12\x31\n\nUpdateUser\x12\x17.user.UpdateUserRequest\x1a\n.user.User2\x9e\x01\n\x0b\x41uthService\x12H\n\rValidateToken\x12\x1a.user.ValidateTokenRequest\x1a\x1b.user.ValidateTokenResponse\x12\x45\n\x0cRefreshToken\x12\x19.user.RefreshTokenRequest\x1a\x1a.user.RefreshTokenResponseB#Z!github.com/ecoguard/protobuf/userb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12user/service.proto\x12\x04user\x1a\x0fuser/user.proto\x1a\x13\x63ommon/common.proto\"\x15\n\x13GetUserCountRequest\"%\n\x14GetUserCountResponse\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\"%\n\x14ValidateTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"W\n\x15ValidateTokenResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x10\n\x08username\x18\x04 \x01(\t\",\n\x13RefreshTokenRequest\x12\x15\n\rrefresh_token\x18\x01 \x01(\t\"<\n\x14RefreshTokenResponse\x12\r\n\x05token\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"&\n\rLogoutRequest\x12\x15\n\rrefresh_token\x18\x01 \x01(\t\"!\n\x0eLogoutResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xa1\x02\n\x0bUserService\x12\x39\n\x08Register\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\x12\x30\n\x05Login\x12\x12.user.LoginRequest\x1a\x13.user.LoginResponse\x12+\n\x07GetUser\x12\x14.user.GetUserRequest\x1a\n.user.User\x12\x31\n\nUpdateUser\x12\x17.user.UpdateUserRequest\x1a\n.user.User\x12\x45\n\x0cGetUserCount\x12\x19.user.GetUserCountRequest\x1a\x1a.user.GetUserCountResponse2\xd3\x01\n\x0b\x41uthService\x12H\n\rValidateToken\x12\x1a.user.ValidateTokenRequest\x1a\x1b.user.ValidateTokenResponse\x12\x45\n\x0cRefreshToken\x12\x19.user.RefreshTokenRequest\x1a\x1a.user.RefreshTokenResponse\x12\x33\n\x06Logout\x12\x13.user.LogoutRequest\x1a\x14.user.LogoutResponseB#Z!github.com/ecoguard/protobuf/userb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,16 +34,24 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'user.service_pb2', _globals
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z!github.com/ecoguard/protobuf/user'
-  _globals['_VALIDATETOKENREQUEST']._serialized_start=66
-  _globals['_VALIDATETOKENREQUEST']._serialized_end=103
-  _globals['_VALIDATETOKENRESPONSE']._serialized_start=105
-  _globals['_VALIDATETOKENRESPONSE']._serialized_end=159
-  _globals['_REFRESHTOKENREQUEST']._serialized_start=161
-  _globals['_REFRESHTOKENREQUEST']._serialized_end=197
-  _globals['_REFRESHTOKENRESPONSE']._serialized_start=199
-  _globals['_REFRESHTOKENRESPONSE']._serialized_end=236
-  _globals['_USERSERVICE']._serialized_start=239
-  _globals['_USERSERVICE']._serialized_end=457
-  _globals['_AUTHSERVICE']._serialized_start=460
-  _globals['_AUTHSERVICE']._serialized_end=618
+  _globals['_GETUSERCOUNTREQUEST']._serialized_start=66
+  _globals['_GETUSERCOUNTREQUEST']._serialized_end=87
+  _globals['_GETUSERCOUNTRESPONSE']._serialized_start=89
+  _globals['_GETUSERCOUNTRESPONSE']._serialized_end=126
+  _globals['_VALIDATETOKENREQUEST']._serialized_start=128
+  _globals['_VALIDATETOKENREQUEST']._serialized_end=165
+  _globals['_VALIDATETOKENRESPONSE']._serialized_start=167
+  _globals['_VALIDATETOKENRESPONSE']._serialized_end=254
+  _globals['_REFRESHTOKENREQUEST']._serialized_start=256
+  _globals['_REFRESHTOKENREQUEST']._serialized_end=300
+  _globals['_REFRESHTOKENRESPONSE']._serialized_start=302
+  _globals['_REFRESHTOKENRESPONSE']._serialized_end=362
+  _globals['_LOGOUTREQUEST']._serialized_start=364
+  _globals['_LOGOUTREQUEST']._serialized_end=402
+  _globals['_LOGOUTRESPONSE']._serialized_start=404
+  _globals['_LOGOUTRESPONSE']._serialized_end=437
+  _globals['_USERSERVICE']._serialized_start=440
+  _globals['_USERSERVICE']._serialized_end=729
+  _globals['_AUTHSERVICE']._serialized_start=732
+  _globals['_AUTHSERVICE']._serialized_end=943
 # @@protoc_insertion_point(module_scope)

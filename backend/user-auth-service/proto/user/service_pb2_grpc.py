@@ -55,6 +55,11 @@ class UserServiceStub:
                 request_serializer=user_dot_user__pb2.UpdateUserRequest.SerializeToString,
                 response_deserializer=user_dot_user__pb2.User.FromString,
                 _registered_method=True)
+        self.GetUserCount = channel.unary_unary(
+                '/user.UserService/GetUserCount',
+                request_serializer=user_dot_service__pb2.GetUserCountRequest.SerializeToString,
+                response_deserializer=user_dot_service__pb2.GetUserCountResponse.FromString,
+                _registered_method=True)
 
 
 class UserServiceServicer:
@@ -84,6 +89,12 @@ class UserServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetUserCount(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -106,6 +117,11 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.UpdateUser,
                     request_deserializer=user_dot_user__pb2.UpdateUserRequest.FromString,
                     response_serializer=user_dot_user__pb2.User.SerializeToString,
+            ),
+            'GetUserCount': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserCount,
+                    request_deserializer=user_dot_service__pb2.GetUserCountRequest.FromString,
+                    response_serializer=user_dot_service__pb2.GetUserCountResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -226,6 +242,33 @@ class UserService:
             metadata,
             _registered_method=True)
 
+    @staticmethod
+    def GetUserCount(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user.UserService/GetUserCount',
+            user_dot_service__pb2.GetUserCountRequest.SerializeToString,
+            user_dot_service__pb2.GetUserCountResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
 
 class AuthServiceStub:
     """Missing associated documentation comment in .proto file."""
@@ -246,6 +289,11 @@ class AuthServiceStub:
                 request_serializer=user_dot_service__pb2.RefreshTokenRequest.SerializeToString,
                 response_deserializer=user_dot_service__pb2.RefreshTokenResponse.FromString,
                 _registered_method=True)
+        self.Logout = channel.unary_unary(
+                '/user.AuthService/Logout',
+                request_serializer=user_dot_service__pb2.LogoutRequest.SerializeToString,
+                response_deserializer=user_dot_service__pb2.LogoutResponse.FromString,
+                _registered_method=True)
 
 
 class AuthServiceServicer:
@@ -263,6 +311,12 @@ class AuthServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Logout(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -275,6 +329,11 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.RefreshToken,
                     request_deserializer=user_dot_service__pb2.RefreshTokenRequest.FromString,
                     response_serializer=user_dot_service__pb2.RefreshTokenResponse.SerializeToString,
+            ),
+            'Logout': grpc.unary_unary_rpc_method_handler(
+                    servicer.Logout,
+                    request_deserializer=user_dot_service__pb2.LogoutRequest.FromString,
+                    response_serializer=user_dot_service__pb2.LogoutResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -331,6 +390,33 @@ class AuthService:
             '/user.AuthService/RefreshToken',
             user_dot_service__pb2.RefreshTokenRequest.SerializeToString,
             user_dot_service__pb2.RefreshTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Logout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user.AuthService/Logout',
+            user_dot_service__pb2.LogoutRequest.SerializeToString,
+            user_dot_service__pb2.LogoutResponse.FromString,
             options,
             channel_credentials,
             insecure,

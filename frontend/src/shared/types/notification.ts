@@ -1,11 +1,11 @@
 export interface Notification {
   id: string;
-  user_id: string;
+  userId: string;
   type: string;
   channel: string;
   title: string;
   content: string;
   status: 'unread' | 'read';
-  created_at: { seconds: number };
-  read_at?: { seconds: number };
+  createdAt: { seconds: number };
+  readAt?: { seconds: number };
 }

@@ -8,4 +8,5 @@ import "classification/classification.proto";
 
 service ClassificationService {
   rpc ClassifyImage (ClassifyImageRequest) returns (ClassifyImageResponse);
+  rpc ClassifyImages (ClassifyImagesRequest) returns (ClassifyImagesResponse);
 }

@@ -1,7 +1,7 @@
 export interface Block {
   index: number;
   timestamp: number;
-  previous_hash: string;
+  previousHash: string;
   hash: string;
   nonce: number;
   data: BlockData;
@@ -9,21 +9,21 @@ export interface Block {
 
 export interface BlockData {
   type: 'classification' | 'resolution';
-  tweet_id: string;
+  tweetId: string;
   label: string;
   confidence: number;
-  image_hash: string;
+  imageHash: string;
   location?: { lat: number; lon: number; address: string };
   resolution?: {
-    admin_id: string;
+    adminId: string;
     notes: string;
-    resolved_image_hash: string;
-    resolved_at: number;
+    resolvedImageHash: string;
+    resolvedAt: number;
   };
 }
 
 export interface VerifyResponse {
   valid: boolean;
-  blocks_count: number;
+  blocksCount: number;
   error?: string;
 }

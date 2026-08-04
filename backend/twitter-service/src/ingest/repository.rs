@@ -24,7 +24,17 @@ impl TweetRepository {
         Ok(tweet.id)
     }
 
-    /// Update the classification field on an existing tweet.
+    /// Find a tweet by its external tweet_id (for parent-child tracking).
+    pub async fn find_by_tweet_id(
+        &self,
+        tweet_id: &str,
+    ) -> Result<Option<TweetDoc>, mongodb::error::Error> {
+        self.collection
+            .find_one(doc! { "tweet_id": tweet_id })
+            .await
+    }
+
+    /// Update classification and metadata on an existing tweet.
     pub async fn update_classification(
         &self,
         id: &str,
@@ -35,6 +45,18 @@ impl TweetRepository {
                 doc! { "_id": id },
                 doc! { "$set": { "classification": bson::to_bson(&classification).unwrap() } },
             )
+            .await?;
+        Ok(())
+    }
+
+    /// Update tweet fields (used when merging child data into parent).
+    pub async fn update_fields(
+        &self,
+        id: &str,
+        fields: mongodb::bson::Document,
+    ) -> Result<(), mongodb::error::Error> {
+        self.collection
+            .update_one(doc! { "_id": id }, doc! { "$set": fields })
             .await?;
         Ok(())
     }

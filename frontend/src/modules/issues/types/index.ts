@@ -1,20 +1,21 @@
 export interface Issue {
   id: string;
-  tweet_id: string;
+  tweetId: string;
   type: string;
   confidence: number;
   status: 'open' | 'resolved';
   location?: { lat: number; lon: number; address: string };
-  paraphrased_text: string;
-  resolution?: { admin_id: string; notes: string; image_hash: string; resolved_at: number };
-  created_at: number;
-  resolved_at?: number;
+  paraphrasedText: string;
+  imageHashes?: string[];
+  resolution?: { adminId: string; notes: string; imageHashes: string[]; resolvedAt: number };
+  createdAt: number;
+  resolvedAt?: number;
 }
 
 export interface Cluster {
   address: string;
   lat: number;
   lon: number;
-  issue_count: number;
+  issueCount: number;
   types: string[];
 }

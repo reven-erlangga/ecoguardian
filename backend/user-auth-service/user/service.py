@@ -15,3 +15,7 @@ def get_user_by_email(email: str) -> dict | None:
 
 def update_user(id: str, email: str, username: str) -> dict | None:
     return repository.update_user(id, email, username)
+
+
+def count_users() -> int:
+    return repository.count_users()

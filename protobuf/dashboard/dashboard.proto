@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dashboard;
+
+option go_package = "github.com/ecoguard/protobuf/dashboard";
+
+message RecentTweet {
+  string id = 1;
+  string tweet_id = 2;
+  string text = 3;
+  string author_username = 4;
+  int64 created_at = 5;
+  string classification_label = 6;
+}
+
+message RecentIssue {
+  string id = 1;
+  string type = 2;
+  string status = 3;
+  string address = 4;
+  int64 created_at = 5;
+}
+
+message DashboardStats {
+  int64 total_tweets = 1;
+  int64 total_issues = 2;
+  int64 open_issues = 3;
+  int64 resolved_issues = 4;
+  int64 unread_notifications = 5;
+  int64 blockchain_blocks = 6;
+  bool blockchain_verified = 7;
+  map<string, int64> issues_by_type = 8;
+  repeated RecentTweet recent_tweets = 9;
+  repeated RecentIssue recent_issues = 10;
+}

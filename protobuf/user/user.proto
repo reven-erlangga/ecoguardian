@@ -24,6 +24,7 @@ message RegisterRequest {
 message RegisterResponse {
   User user = 1;
   string token = 2;
+  string refresh_token = 3;
 }
 
 message LoginRequest {
@@ -34,6 +35,7 @@ message LoginRequest {
 message LoginResponse {
   User user = 1;
   string token = 2;
+  string refresh_token = 3;
 }
 
 message GetUserRequest {

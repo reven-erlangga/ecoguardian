@@ -3,16 +3,19 @@ export interface User {
   email: string;
   username: string;
   role: string;
-  created_at: { seconds: number };
-  updated_at?: { seconds: number };
+  createdAt: { seconds: number };
+  updatedAt?: { seconds: number };
 }
 
 export interface AuthResponse {
   user: User;
   token: string;
+  refreshToken: string;
 }
 
 export interface ValidateTokenResponse {
-  user_id: string;
+  userId: string;
   role: string;
+  email: string;
+  username: string;
 }

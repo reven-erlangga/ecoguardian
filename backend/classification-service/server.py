@@ -1,5 +1,6 @@
 """
 Classification Service — gRPC + HTTP (REST classify)
+Supports single and multi-image classification.
 """
 
 import os
@@ -22,7 +23,6 @@ from rabbitmq import EventPublisher
 # ─── Init Engine ──────────────────────────────────────────
 cfg = Config()
 engine = ONNXInferenceEngine(model_path=cfg.MODEL_PATH, labels_path=cfg.LABELS_PATH)
-# Init RabbitMQ publisher (best-effort)
 publisher = EventPublisher(rabbitmq_uri=cfg.RABBITMQ_URI)
 svc = ClassificationService(engine, publisher=publisher)
 
@@ -39,6 +39,30 @@ class GrpcServicer(service_pb2_grpc.ClassificationServiceServicer):
             result=classification_pb2.ClassificationResult(
                 label=result["label"], confidence=result["confidence"]
             )
+        )
+
+    def ClassifyImages(self, request, context):
+        images = [
+            {"data": img.image_data, "format": img.image_format}
+            for img in request.images
+        ]
+        result = svc.classify_multiple(images, tweet_id=request.tweet_id)
+
+        individuals = [
+            classification_pb2.ImageResult(
+                index=ind["index"],
+                label=ind["label"],
+                confidence=ind["confidence"],
+            )
+            for ind in result["individual"]
+        ]
+
+        return classification_pb2.ClassifyImagesResponse(
+            result=classification_pb2.ClassificationResult(
+                label=result["label"],
+                confidence=result["confidence"],
+            ),
+            individual=individuals,
         )
 
 
@@ -60,6 +84,24 @@ def classify_http():
         file.read(),
         file.filename.rsplit(".", 1)[-1] if "." in file.filename else "jpeg",
     )
+    return jsonify(result)
+
+
+@app.route("/classify-multi", methods=["POST"])
+def classify_multi_http():
+    """Classify multiple images. Send as array of files under 'images' key."""
+    files = request.files.getlist("images")
+    if not files:
+        return jsonify({"error": "no image files"}), 400
+
+    images = [
+        {
+            "data": f.read(),
+            "format": f.filename.rsplit(".", 1)[-1] if "." in f.filename else "jpeg",
+        }
+        for f in files
+    ]
+    result = svc.classify_multiple(images)
     return jsonify(result)
 
 

@@ -1,12 +1,12 @@
 export interface Tweet {
   id: string;
-  tweet_id: string;
+  tweetId: string;
   text?: string;
-  paraphrased_text: string;
+  paraphrasedText: string;
   author: string;
-  author_username: string;
-  media_urls: string[];
-  created_at: { seconds: number };
+  authorUsername: string;
+  mediaUrls: string[];
+  createdAt: { seconds: number };
   classification?: {
     text: { label: string; confidence: number };
     image: { label: string; confidence: number };
@@ -21,7 +21,7 @@ export interface Tweet {
 export interface QueryTweetsParams {
   keyword?: string;
   author?: string;
-  classification_label?: string;
+  classificationLabel?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }

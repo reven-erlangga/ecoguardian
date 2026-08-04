@@ -21,7 +21,7 @@ message Issue {
   Location location = 6;
   string paraphrased_text = 7;
   Resolution resolution = 8;
-  string image_hash = 9;
+  repeated string image_hashes = 9;
   int64 created_at = 10;
   int64 resolved_at = 11;
 }
@@ -29,7 +29,7 @@ message Issue {
 message Resolution {
   string admin_id = 1;
   string notes = 2;
-  string image_hash = 3;
+  repeated string image_hashes = 3;
   int64 resolved_at = 4;
 }
 

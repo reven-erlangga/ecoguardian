@@ -15,6 +15,11 @@ message LabelScore {
   float confidence = 2;
 }
 
+message ImageData {
+  bytes image_data = 1;
+  string image_format = 2;
+}
+
 message ClassifyImageRequest {
   bytes image_data = 1;
   string image_format = 2;
@@ -23,4 +28,22 @@ message ClassifyImageRequest {
 
 message ClassifyImageResponse {
   ClassificationResult result = 1;
+}
+
+// ─── Multiple images ─────────────────────────────────
+
+message ClassifyImagesRequest {
+  repeated ImageData images = 1;
+  string tweet_id = 2;
+}
+
+message ClassifyImagesResponse {
+  ClassificationResult result = 1;       // aggregated majority vote
+  repeated ImageResult individual = 2;   // per-image breakdown
+}
+
+message ImageResult {
+  int32 index = 1;
+  string label = 2;
+  float confidence = 3;
 }

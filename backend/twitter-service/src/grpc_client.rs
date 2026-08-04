@@ -29,6 +29,31 @@ impl ClassificationClient {
             .await
             .map(|r| r.into_inner())
     }
+
+    pub async fn classify_images(
+        &mut self,
+        images: Vec<(Vec<u8>, String)>,  // (data, format)
+        tweet_id: Option<String>,
+    ) -> Result<crate::protos::classification::ClassifyImagesResponse, tonic::Status> {
+        let proto_images: Vec<crate::protos::classification::ImageData> = images
+            .into_iter()
+            .map(|(data, format)| crate::protos::classification::ImageData {
+                image_data: data,
+                image_format: format,
+            })
+            .collect();
+
+        let request = tonic::Request::new(
+            crate::protos::classification::ClassifyImagesRequest {
+                images: proto_images,
+                tweet_id: tweet_id.unwrap_or_default(),
+            },
+        );
+        self.inner
+            .classify_images(request)
+            .await
+            .map(|r| r.into_inner())
+    }
 }
 
 #[cfg(test)]

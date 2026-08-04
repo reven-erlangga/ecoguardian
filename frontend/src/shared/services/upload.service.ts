@@ -4,9 +4,13 @@
 
 const ASSET_UPLOAD_URL = 'http://localhost:8088/upload';
 
-export async function uploadImage(file: File): Promise<string> {
+export async function uploadImages(files: File[]): Promise<string[]> {
+  if (!files.length) return [];
+
   const form = new FormData();
-  form.append('image', file);
+  for (const file of files) {
+    form.append('images', file);
+  }
 
   const res = await fetch(ASSET_UPLOAD_URL, {
     method: 'POST',
@@ -19,5 +23,5 @@ export async function uploadImage(file: File): Promise<string> {
   }
 
   const data = await res.json();
-  return data.url || data.id || 'uploaded';
+  return (data.assets || []).map((a: any) => a.url || a.id || 'uploaded');
 }

@@ -28,18 +28,31 @@ impl TwitterService for Arc<AppState> {
         let req = request.into_inner();
         let repo = TweetRepository::new(&self.db);
 
-        let id = service::ingest_tweet(
+        let (id, validation) = service::ingest_tweet(
             &repo,
             &self.rabbit_channel,
             &self.classify_client,
             &self.nlp_client,
             &self.blockchain_client,
+            &self.asset_client,
             &req,
         )
         .await
         .map_err(|e| Status::internal(e))?;
 
-        Ok(Response::new(IngestTweetResponse { id }))
+        let proto_validation = validation
+            .into_iter()
+            .map(|v| crate::protos::twitter::ValidationMessage {
+                field: v.field,
+                message: v.message,
+                severity: v.severity,
+            })
+            .collect();
+
+        Ok(Response::new(IngestTweetResponse {
+            id,
+            validation: proto_validation,
+        }))
     }
 
     async fn get_tweet(

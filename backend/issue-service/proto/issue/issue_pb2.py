@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from common import common_pb2 as common_dot_common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11issue/issue.proto\x12\x05issue\x1a\x13\x63ommon/common.proto\"5\n\x08Location\x12\x0b\n\x03lat\x18\x01 \x01(\x01\x12\x0b\n\x03lon\x18\x02 \x01(\x01\x12\x0f\n\x07\x61\x64\x64ress\x18\x03 \x01(\t\"\xf8\x01\n\x05Issue\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08tweet_id\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x12\n\nconfidence\x18\x04 \x01(\x02\x12\x0e\n\x06status\x18\x05 \x01(\t\x12!\n\x08location\x18\x06 \x01(\x0b\x32\x0f.issue.Location\x12\x18\n\x10paraphrased_text\x18\x07 \x01(\t\x12%\n\nresolution\x18\x08 \x01(\x0b\x32\x11.issue.Resolution\x12\x12\n\nimage_hash\x18\t \x01(\t\x12\x12\n\ncreated_at\x18\n \x01(\x03\x12\x13\n\x0bresolved_at\x18\x0b \x01(\x03\"V\n\nResolution\x12\x10\n\x08\x61\x64min_id\x18\x01 \x01(\t\x12\r\n\x05notes\x18\x02 \x01(\t\x12\x12\n\nimage_hash\x18\x03 \x01(\t\x12\x13\n\x0bresolved_at\x18\x04 \x01(\x03\"X\n\x07\x43luster\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x0b\n\x03lat\x18\x02 \x01(\x01\x12\x0b\n\x03lon\x18\x03 \x01(\x01\x12\x13\n\x0bissue_count\x18\x04 \x01(\x05\x12\r\n\x05types\x18\x05 \x03(\tB$Z\"github.com/ecoguard/protobuf/issueb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11issue/issue.proto\x12\x05issue\x1a\x13\x63ommon/common.proto\"5\n\x08Location\x12\x0b\n\x03lat\x18\x01 \x01(\x01\x12\x0b\n\x03lon\x18\x02 \x01(\x01\x12\x0f\n\x07\x61\x64\x64ress\x18\x03 \x01(\t\"\xfa\x01\n\x05Issue\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08tweet_id\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x12\n\nconfidence\x18\x04 \x01(\x02\x12\x0e\n\x06status\x18\x05 \x01(\t\x12!\n\x08location\x18\x06 \x01(\x0b\x32\x0f.issue.Location\x12\x18\n\x10paraphrased_text\x18\x07 \x01(\t\x12%\n\nresolution\x18\x08 \x01(\x0b\x32\x11.issue.Resolution\x12\x14\n\x0cimage_hashes\x18\t \x03(\t\x12\x12\n\ncreated_at\x18\n \x01(\x03\x12\x13\n\x0bresolved_at\x18\x0b \x01(\x03\"X\n\nResolution\x12\x10\n\x08\x61\x64min_id\x18\x01 \x01(\t\x12\r\n\x05notes\x18\x02 \x01(\t\x12\x14\n\x0cimage_hashes\x18\x03 \x03(\t\x12\x13\n\x0bresolved_at\x18\x04 \x01(\x03\"X\n\x07\x43luster\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x0b\n\x03lat\x18\x02 \x01(\x01\x12\x0b\n\x03lon\x18\x03 \x01(\x01\x12\x13\n\x0bissue_count\x18\x04 \x01(\x05\x12\r\n\x05types\x18\x05 \x03(\tB$Z\"github.com/ecoguard/protobuf/issueb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -36,9 +36,9 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_LOCATION']._serialized_start=49
   _globals['_LOCATION']._serialized_end=102
   _globals['_ISSUE']._serialized_start=105
-  _globals['_ISSUE']._serialized_end=353
-  _globals['_RESOLUTION']._serialized_start=355
-  _globals['_RESOLUTION']._serialized_end=441
-  _globals['_CLUSTER']._serialized_start=443
-  _globals['_CLUSTER']._serialized_end=531
+  _globals['_ISSUE']._serialized_end=355
+  _globals['_RESOLUTION']._serialized_start=357
+  _globals['_RESOLUTION']._serialized_end=445
+  _globals['_CLUSTER']._serialized_start=447
+  _globals['_CLUSTER']._serialized_end=535
 # @@protoc_insertion_point(module_scope)

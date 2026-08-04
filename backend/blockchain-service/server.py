@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import threading
 
 # ponytail: append proto agar common/ & blockchain/ ditemukan
 _proto = os.path.join(os.path.dirname(__file__), "proto")
@@ -12,10 +13,16 @@ from common.config import Config
 from common.grpc_server import serve
 from chain.blockchain import Blockchain
 from chain.repository import BlockRepository
+from rabbitmq import BlockchainEventConsumer
 
 cfg = Config()
 chain = Blockchain(difficulty=cfg.POW_DIFFICULTY)
 repo = BlockRepository(cfg.MONGODB_URI, cfg.BLOCKCHAIN_DB)
+
+# ponytail: start RabbitMQ consumer in daemon thread
+consumer = BlockchainEventConsumer(chain, repo)
+t = threading.Thread(target=consumer.start, daemon=True)
+t.start()
 
 
 class BlockchainServicer(service_pb2_grpc.BlockchainServiceServicer):
@@ -68,7 +75,11 @@ class BlockchainServicer(service_pb2_grpc.BlockchainServiceServicer):
         return blockchain_pb2.RecordResponse(success=False, error="Failed to store block")
 
     def GetHistory(self, request, context):
-        blocks = repo.get_blocks_by_tweet(request.tweet_id)
+        # ponytail: tweet_id kosong = semua block (untuk blockchain page)
+        if request.tweet_id:
+            blocks = repo.get_blocks_by_tweet(request.tweet_id)
+        else:
+            blocks = repo.get_all_blocks()
         return blockchain_pb2.GetHistoryResponse(
             blocks=[_dict_to_block(b) for b in blocks]
         )

@@ -9,4 +9,5 @@ import "nlp/nlp.proto";
 service NLPService {
   rpc AnalyzeText (AnalyzeTextRequest) returns (AnalyzeTextResponse);
   rpc Geocode (GeocodeRequest) returns (GeocodeResponse);
+  rpc GenerateReply (GenerateReplyRequest) returns (GenerateReplyResponse);
 }

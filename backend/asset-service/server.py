@@ -6,7 +6,7 @@ from concurrent import futures
 from threading import Thread
 
 import grpc
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 
 _proj = os.path.dirname(os.path.abspath(__file__))
 _proto = os.path.join(_proj, "proto")
@@ -15,6 +15,10 @@ sys.path.insert(1, _proj)
 
 from common import common_pb2
 from asset import service_pb2, service_pb2_grpc
+
+from lib.validator import validate_image
+from lib.processor import compress_image
+from lib.imagekit_client import upload_to_imagekit
 
 
 UPLOAD_DIR = Path(__file__).parent / "uploads"
@@ -85,35 +89,74 @@ class AssetServicer(service_pb2_grpc.AssetServiceServicer):
 app = Flask(__name__)
 
 
-@app.route("/upload", methods=["POST"])
-def upload_http():
-    if "image" not in request.files:
-        return jsonify({"error": "no image file"}), 400
-    file = request.files["image"]
-    asset_id = str(uuid.uuid4())
-    ext = Path(file.filename or "image.jpg").suffix or ".jpg"
-    local_path = UPLOAD_DIR / f"{asset_id}{ext}"
-    file.save(local_path)
+@app.after_request
+def add_cors(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    return response
 
-    url = f"/uploads/{asset_id}{ext}"
-    doc = {
-        "id": asset_id,
-        "url": url,
-        "filename": file.filename or "unknown",
-        "mime_type": file.content_type or "image/jpeg",
-        "size": os.path.getsize(local_path),
-        "metadata": request.form.get("metadata", "{}"),
-        "created_at": int(time.time()),
-    }
-    _assets[asset_id] = doc
-    return jsonify(doc)
+
+@app.route("/upload", methods=["POST", "OPTIONS"])
+def upload_http():
+    if "OPTIONS" == request.method:
+        return jsonify({"ok": True})
+
+    files = request.files.getlist("images")
+    if not files:
+        return jsonify({"error": "no image files"}), 400
+
+    results = []
+    for file in files:
+        raw = file.read()
+        
+        # Validate
+        valid, err = validate_image(raw, file.filename or "")
+        if not valid:
+            return jsonify({"error": err, "filename": file.filename}), 400
+        
+        # Compress to WebP
+        optimized = compress_image(raw)
+        
+        # Upload to ImageKit or save locally
+        try:
+            cdn_url = upload_to_imagekit(optimized, f"{uuid.uuid4()}.webp")
+            doc = {
+                "id": str(uuid.uuid4()),
+                "url": cdn_url,
+                "filename": file.filename or "unknown",
+                "mime_type": "image/webp",
+                "size": len(optimized),
+                "metadata": request.form.get("metadata", "{}"),
+                "created_at": int(time.time()),
+            }
+        except Exception:
+            # Fallback to local
+            asset_id = str(uuid.uuid4())
+            local_path = UPLOAD_DIR / f"{asset_id}.webp"
+            local_path.write_bytes(optimized)
+            url = f"/uploads/{asset_id}.webp"
+            doc = {
+                "id": asset_id,
+                "url": url,
+                "filename": file.filename or "unknown",
+                "mime_type": "image/webp",
+                "size": len(optimized),
+                "metadata": request.form.get("metadata", "{}"),
+                "created_at": int(time.time()),
+            }
+        
+        _assets[doc["id"]] = doc
+        results.append(doc)
+
+    return jsonify({"assets": results})
 
 
 # ─── Serve uploaded files ─────────────────────────────────
 
 @app.route("/uploads/<path:filename>")
 def serve_upload(filename):
-    return app.send_static_file(str(UPLOAD_DIR / filename))
+    return send_from_directory(UPLOAD_DIR, filename)
 
 
 # ─── Start Servers ────────────────────────────────────────

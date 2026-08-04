@@ -17,9 +17,7 @@ class Config:
     )
     LABELS_PATH = os.getenv(
         "LABELS_PATH",
-        os.path.join(
-            os.path.dirname(__file__), "..", "features", "classifier", "labels.json"
-        ),
+        os.path.join(os.path.dirname(__file__), "..", "models", "labels.json"),
     )
 
     # RabbitMQ (optional — untuk publish event hasil klasifikasi)

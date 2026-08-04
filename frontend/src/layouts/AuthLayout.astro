@@ -1,0 +1,30 @@
+---
+// ponytail: AuthLayout = Layout + card terpusat — untuk login/register
+import Layout from './Layout.astro';
+import Card from '@components/atoms/card/Card.svelte';
+import LeafIcon from 'phosphor-svelte/lib/LeafIcon';
+
+export interface Props {
+  title?: string;
+  authTitle: string;
+}
+
+const { title, authTitle } = Astro.props;
+---
+
+<Layout {title}>
+  <div class="min-h-screen flex items-center justify-center bg-yellow-100 p-4">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-heading border-2 border-border rounded-base inline-block px-6 py-3 bg-yellow-300 shadow-shadow flex items-center gap-3">
+          <LeafIcon size={32} weight="fill" color="#16A34A" />
+          Ecoguard
+        </h1>
+      </div>
+      <Card>
+        <h2 class="text-2xl font-heading mb-6">{authTitle}</h2>
+        <slot />
+      </Card>
+    </div>
+  </div>
+</Layout>

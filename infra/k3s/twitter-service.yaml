@@ -16,7 +16,7 @@ spec:
       containers:
         - name: twitter
           image: ecoguard/twitter-service:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 50052
             - containerPort: 8000
@@ -26,7 +26,13 @@ spec:
             - name: RABBITMQ_URI
               value: amqp://guest:guest@rabbitmq:5672
             - name: CLASSIFICATION_GRPC_ADDR
-              value: classification-service:50053
+              value: http://classification-service:50053
+            - name: NLP_GRPC_ADDR
+              value: http://nlp-service:50055
+            - name: BLOCKCHAIN_GRPC_ADDR
+              value: http://blockchain-service:50056
+            - name: ASSET_GRPC_ADDR
+              value: http://asset-service:50058
           readinessProbe:
             httpGet:
               path: /health

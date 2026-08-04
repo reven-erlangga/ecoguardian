@@ -4,6 +4,7 @@ grpcio-tools>=1.60
 psycopg2-binary>=2.9
 bcrypt>=4.1
 pyjwt>=2.8
+hvac>=2.0
 
 # Test
 pytest>=8.0

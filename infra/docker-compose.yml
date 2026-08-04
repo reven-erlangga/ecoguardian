@@ -1,4 +1,6 @@
 # ─── Networks ────────────────────────────────────────────
+name: ecoguard
+
 networks:
   ecoguard:
     driver: bridge
@@ -108,6 +110,24 @@ services:
       timeout: 3s
       retries: 10
 
+  vault:
+    image: hashicorp/vault:1.18
+    container_name: ecoguard-vault
+    networks: [ecoguard]
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "root"
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8200/v1/sys/health >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 3s
+
   # ═══════════════════════════════════════════════════════
   # BACKEND SERVICES
   # ═══════════════════════════════════════════════════════
@@ -115,6 +135,7 @@ services:
   classification-service:
     build:
       context: ../backend/classification-service
+    image: ecoguard/classification-service:latest
     container_name: ecoguard-classification
     networks: [ecoguard]
     ports:
@@ -130,6 +151,7 @@ services:
   nlp-service:
     build:
       context: ../backend/nlp-service
+    image: ecoguard/nlp-service:latest
     container_name: ecoguard-nlp
     networks: [ecoguard]
     ports:
@@ -143,6 +165,7 @@ services:
   user-auth-service:
     build:
       context: ../backend/user-auth-service
+    image: ecoguard/user-auth-service:latest
     container_name: ecoguard-user-auth
     networks: [ecoguard]
     ports:
@@ -157,6 +180,7 @@ services:
   notification-service:
     build:
       context: ../backend/notification-service
+    image: ecoguard/notification-service:latest
     container_name: ecoguard-notification
     networks: [ecoguard]
     ports:
@@ -173,6 +197,7 @@ services:
     build:
       context: ..
       dockerfile: backend/twitter-service/Dockerfile
+    image: ecoguard/twitter-service:latest
     container_name: ecoguard-twitter
     networks: [ecoguard]
     ports:
@@ -185,6 +210,7 @@ services:
       RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
       CLASSIFICATION_GRPC_ADDR: "http://classification-service:50053"
       NLP_GRPC_ADDR: "http://nlp-service:50055"
+      ASSET_GRPC_ADDR: "http://asset-service:50058"
     depends_on:
       mongodb: { condition: service_healthy }
       rabbitmq: { condition: service_healthy }
@@ -194,6 +220,7 @@ services:
   blockchain-service:
     build:
       context: ../backend/blockchain-service
+    image: ecoguard/blockchain-service:latest
     container_name: ecoguard-blockchain
     networks: [ecoguard]
     ports:
@@ -205,12 +232,14 @@ services:
       MONGODB_URI: "mongodb://host.docker.internal:27017"
       BLOCKCHAIN_DB: "ecoguard_blockchain"
       POW_DIFFICULTY: "4"
+      RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
     depends_on:
       mongodb: { condition: service_healthy }
 
   issue-service:
     build:
       context: ../backend/issue-service
+    image: ecoguard/issue-service:latest
     container_name: ecoguard-issue
     networks: [ecoguard]
     ports:
@@ -218,12 +247,14 @@ services:
     environment:
       GRPC_PORT: "50057"
       MONGODB_URI: "mongodb://mongodb:27017"
+      RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
     depends_on:
       mongodb: { condition: service_healthy }
 
   asset-service:
     build:
       context: ../backend/asset-service
+    image: ecoguard/asset-service:latest
     container_name: ecoguard-asset
     networks: [ecoguard]
     ports:
@@ -232,15 +263,23 @@ services:
     environment:
       ASSET_GRPC_PORT: "50058"
       ASSET_HTTP_PORT: "8088"
+      VAULT_ADDR: "http://vault:8200"
+      VAULT_TOKEN: "root"
+      IMAGEKIT_PUBLIC_KEY: "public_5TieMqMZ7ZLktPDsho/BP/op7Ak="
+      IMAGEKIT_PRIVATE_KEY: "private_gK1WeuoVR3FsvNH2g8KjIslitkw="
+      IMAGEKIT_URL_ENDPOINT: "https://ik.imagekit.io/gyvj1g1wne"
     volumes:
       - asset-uploads:/app/uploads
+    depends_on:
+      vault: { condition: service_started }
 
   gateway:
     build:
       context: ..
       dockerfile: infra/gateway/Dockerfile
+    image: ecoguard/gateway:latest
     container_name: ecoguard-gateway
-    network_mode: "host"
+    networks: [ecoguard]
     ports:
       - "4000:4000"
     depends_on:
@@ -252,6 +291,37 @@ services:
       blockchain-service: { condition: service_started }
       issue-service: { condition: service_started }
       asset-service: { condition: service_started }
+
+  # ═══════════════════════════════════════════════════════
+  # FRONTEND
+  # ═══════════════════════════════════════════════════════
+
+  frontend:
+    build:
+      context: ../frontend
+    image: ecoguard/frontend:latest
+    container_name: ecoguard-frontend
+    networks: [ecoguard]
+    ports:
+      - "4321:4321"
+    environment:
+      PUBLIC_TWITTER_SERVICE_URL: "http://twitter-service:8000"
+      HOST: "0.0.0.0"
+    depends_on:
+      gateway: { condition: service_started }
+
+  # ═══════════════════════════════════════════════════════
+  # HANDBOOK
+  # ═══════════════════════════════════════════════════════
+
+  handbook:
+    build:
+      context: ../handbook
+    image: ecoguard/handbook:latest
+    container_name: ecoguard-handbook
+    networks: [ecoguard]
+    ports:
+      - "5173:80"
 
 # ─── Volumes ─────────────────────────────────────────────
 volumes:

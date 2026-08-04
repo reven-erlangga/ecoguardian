@@ -15,8 +15,30 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        /* neobrutalism tokens */
+        main: { DEFAULT: 'hsl(var(--main))', foreground: 'hsl(var(--main-foreground))' },
+        'secondary-background': 'hsl(var(--secondary-background))',
+        overlay: 'hsl(var(--overlay))',
       },
-      borderRadius: { DEFAULT: 'var(--radius)' },
+      borderRadius: { DEFAULT: 'var(--radius)', base: 'var(--border-radius)' },
+      boxShadow: {
+        shadow: 'var(--box-shadow-x) var(--box-shadow-y) 0px 0px #000',
+        reverseShadow: 'calc(-1 * var(--box-shadow-x)) calc(-1 * var(--box-shadow-y)) 0px 0px #000',
+      },
+      spacing: {
+        boxShadowX: 'var(--box-shadow-x)',
+        boxShadowY: 'var(--box-shadow-y)',
+        reverseBoxShadowX: 'calc(-1 * var(--box-shadow-x))',
+        reverseBoxShadowY: 'calc(-1 * var(--box-shadow-y))',
+      },
+      fontFamily: {
+        base: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      fontWeight: {
+        base: '500',
+        heading: '700',
+      },
     },
   },
   plugins: [],

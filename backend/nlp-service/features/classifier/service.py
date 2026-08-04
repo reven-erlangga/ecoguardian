@@ -18,34 +18,40 @@ except Exception:
     classifier = None
     print("⚠️ IndoBERT not available, using keyword-based fallback")
 
-# ponytail: works without GPU/transformers
+# Ecoguard environmental issue labels
 KEYWORDS = {
-    "fallen_tree": [
-        "pohon tumbang",
-        "dahan patah",
-        "pohon roboh",
-        "ranting",
-        "batang",
+    "deforestation": [
+        "hutan", "pohon", "gundul", "tebang", "sawit", "logging",
+        "deforestasi", "mangrove", "kebakaran hutan", "pembalakan", "taman nasional",
     ],
-    "garbage": [
-        "sampah",
-        "tps",
-        "limbah",
-        "bau",
-        "kotor",
-        "tumpukan sampah",
+    "water_pollution": [
+        "limbah", "sungai", "tercemar", "pencemaran", "tumpahan",
+        "minyak", "kali", "cemar", "laut tercemar", "air kotor", "teluk",
     ],
-    "vandalism": [
-        "coret",
-        "grafiti",
-        "vandal",
-        "rusak",
-        "pecah",
-        "bongkar",
+    "air_pollution": [
+        "asap", "udara", "polusi", "pm2.5", "ispu", "kabut",
+        "karbon", "emisi", "terbakar", "kebakaran",
+    ],
+    "illegal_mining": [
+        "tambang", "galian", "emas", "batubara", "nikel", "mineral",
+        "merkuri", "tambang ilegal",
+    ],
+    "wildlife_trafficking": [
+        "satwa", "burung", "penyelundupan", "cula", "gading",
+        "harimau", "orangutan", "dilindungi", "cenderawasih",
+    ],
+    "coral_bleaching": [
+        "karang", "reef", "pemutihan", "bleaching", "coral", "terumbu",
+    ],
+    "coastal_erosion": [
+        "abrasi", "pantai", "erosi", "garis pantai", "surut",
+    ],
+    "waste_management": [
+        "sampah", "tpa", "plastik", "limbah padat", "daur ulang", "bau sampah",
     ],
 }
 
-LABELS = ["fallen_tree", "garbage", "vandalism"]
+LABELS = list(KEYWORDS.keys())
 
 
 def _classify_keyword(text: str) -> tuple:
@@ -60,7 +66,7 @@ def _classify_keyword(text: str) -> tuple:
 
     best = max(scores, key=scores.get)
     if scores[best] == 0:
-        return ("fallen_tree", 0.0)  # unknown → default
+        return ("environmental_issue", 0.0)  # unknown → default
 
     confidence = min(scores[best] / 3.0, 0.95)
     return (best, confidence)
@@ -80,7 +86,7 @@ def _classify_transformers(text: str) -> tuple:
                 label_map[ours] = r["score"]
 
     if not label_map:
-        return ("fallen_tree", 0.0)
+        return ("environmental_issue", 0.0)
 
     best = max(label_map, key=label_map.get)
     return (best, label_map[best])

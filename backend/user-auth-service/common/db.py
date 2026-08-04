@@ -1,7 +1,7 @@
 import time
 
 import psycopg2
-from psycopg2 import pool
+from psycopg2 import pool, extras
 
 from .config import Config
 
@@ -16,7 +16,8 @@ def get_pool():
         for attempt in range(30):
             try:
                 _pool = pool.ThreadedConnectionPool(
-                    minconn=1, maxconn=10, dsn=Config.DATABASE_URL
+                    minconn=1, maxconn=10, dsn=Config.DATABASE_URL,
+                    cursor_factory=extras.RealDictCursor,
                 )
                 return _pool
             except Exception as e:
@@ -27,7 +28,7 @@ def get_pool():
 
 
 def init_db():
-    """Create users table if not exists."""
+    """Create tables if not exist."""
     conn = get_connection()
     try:
         with conn.cursor() as cur:
@@ -44,9 +45,25 @@ def init_db():
                 CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
             """)
             conn.commit()
-            print("\u2705 Users table ready")
+            print("✅ Users table ready")
+
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS refresh_tokens (
+                    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    user_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                    token_hash     VARCHAR(64) NOT NULL,
+                    expires_at     TIMESTAMP NOT NULL,
+                    revoked        BOOLEAN NOT NULL DEFAULT FALSE,
+                    created_at     TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                CREATE INDEX IF NOT EXISTS idx_refresh_tokens_hash ON refresh_tokens (token_hash);
+                CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens (user_id);
+            """)
+            conn.commit()
+            print("✅ Refresh tokens table ready")
     except Exception as e:
-        print(f"\u26a0\ufe0f  Failed to init DB: {e}")
+        print(f"⚠️  Failed to init DB: {e}")
     finally:
         return_connection(conn)
 

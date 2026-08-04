@@ -1,0 +1,23 @@
+---
+// ponytail: MainLayout = Layout + sidebar — untuk semua page utama
+import Layout from './Layout.astro';
+import Navigation from '@components/organisms/navigation/navigation.svelte';
+import AuthGuard from '$modules/auth/parts/auth-guard/AuthGuard.svelte';
+
+export interface Props {
+  title?: string;
+  currentPath?: string;
+}
+
+const { title, currentPath = '/' } = Astro.props;
+---
+
+<Layout {title}>
+  <AuthGuard client:load />
+  <div class="flex h-screen overflow-hidden">
+    <Navigation {currentPath} client:load />
+    <main class="flex-1 overflow-y-auto p-8">
+      <slot />
+    </main>
+  </div>
+</Layout>

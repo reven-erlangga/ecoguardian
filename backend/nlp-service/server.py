@@ -23,6 +23,7 @@ from common.grpc_server import serve
 from features.classifier import service as classifier_service
 from features.ner import service as ner_service
 from features.paraphrase import service as paraphrase_service
+from features.reply import service as reply_service
 from geocoding.cache import GeoCache
 from geocoding.nominatim import NominatimClient
 
@@ -68,6 +69,15 @@ class NLPServiceServicer(service_pb2_grpc.NLPServiceServicer):
             )
         # Address not found — return zero coordinates
         return nlp_pb2.GeocodeResponse(lat=0.0, lon=0.0, display_name="")
+
+    def GenerateReply(self, request, context):
+        msg = reply_service.generate_reply(
+            tweet_text=request.tweet_text,
+            missing_fields=list(request.missing_fields),
+            classification_label=request.classification_label,
+            classification_confidence=request.classification_confidence,
+        )
+        return nlp_pb2.GenerateReplyResponse(message=msg)
 
 
 # ─── Main ───────────────────────────────────────────────────

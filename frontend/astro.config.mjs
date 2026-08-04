@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 import tailwind from '@astrojs/tailwind';
+import node from '@astrojs/node';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -12,8 +13,10 @@ export default defineConfig({
     tailwind({ applyBaseStyles: false }),
   ],
   output: 'server',
+  adapter: node({ mode: 'standalone' }),
   vite: {
     resolve: {
+      extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.svelte.ts', '.json'],
       alias: {
         '@': path.resolve(__dirname, './src'),
         '@shared': path.resolve(__dirname, './src/shared'),

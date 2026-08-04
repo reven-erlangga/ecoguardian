@@ -27,6 +27,20 @@ def _handle_message(ch, method, properties, body):
                 title=title,
                 content=content,
             )
+        elif routing_key == "issue.resolved":
+            issue_id = data.get("issue_id", "")
+            admin_id = data.get("admin_id", "")
+            notes = data.get("notes", "")
+            title = "Issue Resolved"
+            content = (
+                f"Issue {issue_id} resolved by {admin_id}: {notes}"
+            )
+            sender_service.send(
+                user_id=admin_id,
+                type_="resolution",
+                title=title,
+                content=content,
+            )
         elif routing_key == "alert.triggered":
             user_id = data.get("user_id", "")
             alert_type = data.get("type", "alert")
@@ -72,7 +86,7 @@ def _run_consumer():
         result = channel.queue_declare(queue="", exclusive=True)
         queue_name = result.method.queue
 
-        for key in ["classification.completed", "alert.triggered"]:
+        for key in ["classification.completed", "alert.triggered", "issue.resolved"]:
             channel.queue_bind(
                 exchange="ecoguard.events",
                 queue=queue_name,

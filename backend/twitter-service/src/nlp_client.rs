@@ -31,6 +31,22 @@ impl NlpClient {
         let request = tonic::Request::new(crate::protos::nlp::GeocodeRequest { address });
         self.inner.geocode(request).await.map(|r| r.into_inner())
     }
+
+    pub async fn generate_reply(
+        &mut self,
+        tweet_text: String,
+        missing_fields: Vec<String>,
+        classification_label: String,
+        classification_confidence: f32,
+    ) -> Result<crate::protos::nlp::GenerateReplyResponse, tonic::Status> {
+        let request = tonic::Request::new(crate::protos::nlp::GenerateReplyRequest {
+            tweet_text,
+            missing_fields,
+            classification_label,
+            classification_confidence,
+        });
+        self.inner.generate_reply(request).await.map(|r| r.into_inner())
+    }
 }
 
 #[cfg(test)]

@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from nlp import nlp_pb2 as nlp_dot_nlp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11nlp/service.proto\x12\x03nlp\x1a\rnlp/nlp.proto2\x84\x01\n\nNLPService\x12@\n\x0b\x41nalyzeText\x12\x17.nlp.AnalyzeTextRequest\x1a\x18.nlp.AnalyzeTextResponse\x12\x34\n\x07Geocode\x12\x13.nlp.GeocodeRequest\x1a\x14.nlp.GeocodeResponseB\"Z github.com/ecoguard/protobuf/nlpb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11nlp/service.proto\x12\x03nlp\x1a\rnlp/nlp.proto2\xcc\x01\n\nNLPService\x12@\n\x0b\x41nalyzeText\x12\x17.nlp.AnalyzeTextRequest\x1a\x18.nlp.AnalyzeTextResponse\x12\x34\n\x07Geocode\x12\x13.nlp.GeocodeRequest\x1a\x14.nlp.GeocodeResponse\x12\x46\n\rGenerateReply\x12\x19.nlp.GenerateReplyRequest\x1a\x1a.nlp.GenerateReplyResponseB\"Z github.com/ecoguard/protobuf/nlpb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,5 +34,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z github.com/ecoguard/protobuf/nlp'
   _globals['_NLPSERVICE']._serialized_start=42
-  _globals['_NLPSERVICE']._serialized_end=174
+  _globals['_NLPSERVICE']._serialized_end=246
 # @@protoc_insertion_point(module_scope)

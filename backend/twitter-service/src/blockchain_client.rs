@@ -18,7 +18,7 @@ impl BlockchainClient {
         tweet_id: String,
         label: String,
         confidence: f32,
-        image_hash: String,
+        image_url: String,
         lat: f64,
         lon: f64,
         address: String,
@@ -28,7 +28,7 @@ impl BlockchainClient {
             tweet_id,
             label,
             confidence,
-            image_hash,
+            image_hash: image_url,
             location: Some(loc),
         });
         self.inner

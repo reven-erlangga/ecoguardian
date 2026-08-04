@@ -15,6 +15,7 @@ fn main() {
                 "../../protobuf/twitter/service.proto",
                 "../../protobuf/nlp/service.proto",
                 "../../protobuf/blockchain/service.proto",
+                "../../protobuf/asset/service.proto",
             ],
             &["../../protobuf/"],
         )

@@ -12,11 +12,18 @@ service UserService {
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc GetUser (GetUserRequest) returns (User);
   rpc UpdateUser (UpdateUserRequest) returns (User);
+  rpc GetUserCount (GetUserCountRequest) returns (GetUserCountResponse);
 }
 
 service AuthService {
   rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+}
+
+message GetUserCountRequest {}
+message GetUserCountResponse {
+  int32 count = 1;
 }
 
 message ValidateTokenRequest {
@@ -26,12 +33,23 @@ message ValidateTokenRequest {
 message ValidateTokenResponse {
   string user_id = 1;
   string role = 2;
+  string email = 3;
+  string username = 4;
 }
 
 message RefreshTokenRequest {
-  string token = 1;
+  string refresh_token = 1;
 }
 
 message RefreshTokenResponse {
   string token = 1;
+  string refresh_token = 2;
+}
+
+message LogoutRequest {
+  string refresh_token = 1;
+}
+
+message LogoutResponse {
+  bool success = 1;
 }

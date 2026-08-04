@@ -1,3 +1,5 @@
+use crate::common::vault::read_secret;
+
 #[derive(Debug, Clone)]
 pub struct Config {
     pub grpc_port: u16,
@@ -7,6 +9,7 @@ pub struct Config {
     pub class_grpc_addr: String,
     pub nlp_grpc_addr: String,
     pub blockchain_grpc_addr: String,
+    pub asset_grpc_addr: String,
 }
 
 impl Config {
@@ -15,15 +18,21 @@ impl Config {
             grpc_port: env_u16("GRPC_PORT", 50052),
             http_port: env_u16("HTTP_PORT", 8000),
             mongo_uri: std::env::var("MONGO_URI")
-                .unwrap_or_else(|_| "mongodb://localhost:27017".to_string()),
+                .ok()
+                .or_else(|| read_secret("ecoguard/db", "mongo-twitter-uri"))
+                .unwrap_or_else(|| "mongodb://localhost:27017".to_string()),
             rabbitmq_uri: std::env::var("RABBITMQ_URI")
-                .unwrap_or_else(|_| "amqp://guest:guest@localhost:5672".to_string()),
+                .ok()
+                .or_else(|| read_secret("ecoguard/db", "rabbitmq-uri"))
+                .unwrap_or_else(|| "amqp://guest:guest@localhost:5672".to_string()),
             class_grpc_addr: std::env::var("CLASSIFICATION_GRPC_ADDR")
                 .unwrap_or_else(|_| "http://localhost:50053".to_string()),
             nlp_grpc_addr: std::env::var("NLP_GRPC_ADDR")
                 .unwrap_or_else(|_| "http://localhost:50055".to_string()),
             blockchain_grpc_addr: std::env::var("BLOCKCHAIN_GRPC_ADDR")
                 .unwrap_or_else(|_| "http://localhost:50056".to_string()),
+            asset_grpc_addr: std::env::var("ASSET_GRPC_ADDR")
+                .unwrap_or_else(|_| "http://localhost:50058".to_string()),
         }
     }
 }
@@ -87,6 +96,7 @@ mod tests {
         assert_eq!(config.class_grpc_addr, "http://localhost:50053");
         assert_eq!(config.nlp_grpc_addr, "http://localhost:50055");
         assert_eq!(config.blockchain_grpc_addr, "http://localhost:50056");
+        assert_eq!(config.asset_grpc_addr, "http://localhost:50058");
     }
 
     #[test]
@@ -112,6 +122,7 @@ mod tests {
         std::env::set_var("NLP_GRPC_ADDR", "http://custom:50055");
         std::env::set_var("CLASSIFICATION_GRPC_ADDR", "http://custom:50053");
         std::env::set_var("BLOCKCHAIN_GRPC_ADDR", "http://custom:50056");
+        std::env::set_var("ASSET_GRPC_ADDR", "http://custom:50058");
 
         let config = Config::from_env();
         assert_eq!(config.mongo_uri, "mongodb://custom:27017");
@@ -119,11 +130,13 @@ mod tests {
         assert_eq!(config.class_grpc_addr, "http://custom:50053");
         assert_eq!(config.nlp_grpc_addr, "http://custom:50055");
         assert_eq!(config.blockchain_grpc_addr, "http://custom:50056");
+        assert_eq!(config.asset_grpc_addr, "http://custom:50058");
 
         std::env::remove_var("MONGO_URI");
         std::env::remove_var("RABBITMQ_URI");
         std::env::remove_var("CLASSIFICATION_GRPC_ADDR");
         std::env::remove_var("BLOCKCHAIN_GRPC_ADDR");
+        std::env::remove_var("ASSET_GRPC_ADDR");
         std::env::remove_var("NLP_GRPC_ADDR");
     }
 }

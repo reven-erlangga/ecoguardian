@@ -10,6 +10,9 @@ pub mod nlp {
 pub mod blockchain {
     tonic::include_proto!("blockchain");
 }
+pub mod asset {
+    tonic::include_proto!("asset");
+}
 pub mod common {
     tonic::include_proto!("common");
 }
