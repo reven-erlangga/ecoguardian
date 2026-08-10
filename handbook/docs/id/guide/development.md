@@ -33,7 +33,7 @@ pip install -r requirements.txt
 python server.py
 
 # Twitter service (Node.js)
-cd backend/twitter-service-node
+cd backend/twitter-service
 npm install
 npm start
 ```
@@ -101,7 +101,7 @@ pytest tests/
 ### Twitter Service (Node.js)
 
 ```bash
-cd backend/twitter-service-node
+cd backend/twitter-service
 npm run check
 ```
 

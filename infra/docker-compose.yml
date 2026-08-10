@@ -200,7 +200,7 @@ services:
   twitter-service:
     build:
       context: ..
-      dockerfile: backend/twitter-service-node/Dockerfile
+      dockerfile: backend/twitter-service/Dockerfile
     image: ecoguard/twitter-service:latest
     container_name: ecoguard-twitter
     networks: [ecoguard]

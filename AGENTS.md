@@ -189,7 +189,7 @@ backend/
 │   ├── Dockerfile
 │   └── .env.example
 │
-├── twitter-service-node/             # Node.js — gRPC + Hono + MongoDB
+├── twitter-service/             # Node.js — gRPC + Hono + MongoDB
 │   ├── src/
 │   │   ├── server.js                 # Entry point
 │   │   ├── grpc.js                   # TwitterService gRPC server

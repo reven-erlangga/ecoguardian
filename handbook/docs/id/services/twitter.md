@@ -12,7 +12,7 @@ Service untuk **ingest, watcher, dan query tweet** dari Twitter. Menggunakan **N
 ## Lokasi Kode
 
 ```
-backend/twitter-service-node/src/
+backend/twitter-service/src/
 ├── server.js            # Entry point, boot sequence
 ├── config.js            # Config from env
 ├── mongo.js             # MongoDB connection + indexes
@@ -109,7 +109,7 @@ docker compose up twitter-service -d
 Atau development:
 
 ```bash
-cd backend/twitter-service-node
+cd backend/twitter-service
 npm install
 npm start
 ```
@@ -117,6 +117,6 @@ npm start
 ## Testing
 
 ```bash
-cd backend/twitter-service-node
+cd backend/twitter-service
 npm run check   # logic murni (validateTweet, generateReplyMessage, detectLocation)
 ```

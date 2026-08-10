@@ -50,7 +50,7 @@ ecoguard/
 ├── frontend/                    # Astro + React
 ├── backend/
 │   ├── gateway/                 # Rust — GraphQL gateway
-│   ├── twitter-service-node/  # Node.js — Twitter ingestion
+│   ├── twitter-service/  # Node.js — Twitter ingestion
 │   ├── classification-service/  # Python — ONNX inference
 │   ├── user-auth-service/       # Python — Auth + user management
 │   ├── notification-service/    # Python — Email/Telegram

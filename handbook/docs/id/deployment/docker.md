@@ -48,7 +48,7 @@ Setiap service punya `Dockerfile` sendiri:
 ```
 backend/classification-service/Dockerfile
 backend/user-auth-service/Dockerfile
-backend/twitter-service-node/Dockerfile
+backend/twitter-service/Dockerfile
 ...
 infra/gateway/Dockerfile
 ```
