@@ -40,7 +40,7 @@ Connection pooling untuk PostgreSQL. Berlaku sebagai proxy:
 App → pgBouncer (:6432) → PostgreSQL (:5432)
 ```
 
-Config: `infra/k3s/pgbouncer/pgbouncer.ini`
+pgBouncer dijalankan sebagai service di `infra/docker-compose.yml`.
 
 ## MongoDB
 

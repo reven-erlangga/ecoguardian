@@ -29,13 +29,10 @@ features:
   - icon: 📡
     title: GraphQL Gateway
     details: GraphQL Mesh (Node.js) sebagai unified API, translate GraphQL ke gRPC.
-  - icon: ☸️
-    title: K3s Orchestration
-    details: Siap deploy ke Kubernetes ringan (K3s) dengan manifest lengkap.
+  - icon: 🐳
+    title: Docker Compose
+    details: Semua service di-containerize dan di-orchestrate via Docker Compose untuk dev.
   - icon: 📋
     title: Citizen Reporting
     details: Issue reporting, asset management, notifikasi email/Telegram, blockchain integration.
-  - icon: 🐳
-    title: Containerized
-    details: Semua service punya Dockerfile, orchestrated via Docker Compose untuk dev.
 ---

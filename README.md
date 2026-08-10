@@ -1,6 +1,6 @@
 # Ecoguard
 
-Sistem klasifikasi citra berbasis **microservice** untuk deteksi pohon tumbang, sampah liar, dan vandalisme. Dibangun dengan arsitektur **GraphQL Gateway + gRPC microservices**, containerized, orchestrated di **K3s**.
+Sistem klasifikasi citra berbasis **microservice** untuk deteksi pohon tumbang, sampah liar, dan vandalisme. Dibangun dengan arsitektur **GraphQL Gateway + gRPC microservices**, containerized via **Docker Compose**.
 
 ## Arsitektur
 
@@ -39,7 +39,7 @@ Sistem klasifikasi citra berbasis **microservice** untuk deteksi pohon tumbang, 
 | **Inference** | PyTorch → ONNX Runtime |
 | **Databases** | PostgreSQL (via pgBouncer), MongoDB |
 | **Message Queue** | RabbitMQ |
-| **Orchestration** | Docker + K3s |
+| **Orchestration** | Docker Compose |
 | **Contracts** | Protobuf (buf) |
 | **Auth** | JWT (validated at gateway) |
 
@@ -59,7 +59,7 @@ ecoguard/
 │   ├── blockchain-service/      # Blockchain integration
 │   └── nlp-service/             # NLP processing
 ├── training/                    # Model training pipeline
-├── infra/                       # K3s manifests, Docker Compose
+├── infra/                       # Docker Compose, DB init scripts
 ├── protobuf/                    # Shared proto definitions
 │   └── common/, twitter/, user/, ...
 ```

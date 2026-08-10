@@ -71,6 +71,7 @@ const config = {
               { text: 'Overview', link: '/research/overview' },
               { text: 'Scrapers', link: '/research/scrapers' },
               { text: 'Training', link: '/research/training' },
+              { text: 'Clustering', link: '/research/clustering' },
             ],
           },
           {
@@ -107,7 +108,6 @@ const config = {
             text: 'Deployment',
             items: [
               { text: 'Docker', link: '/deployment/docker' },
-              { text: 'K3s (Kubernetes)', link: '/deployment/k3s' },
               { text: 'Infrastructure', link: '/deployment/infrastructure' },
             ],
           },
@@ -165,6 +165,7 @@ const config = {
               { text: 'Overview', link: '/id/research/overview' },
               { text: 'Scrapers', link: '/id/research/scrapers' },
               { text: 'Training', link: '/id/research/training' },
+              { text: 'Clustering', link: '/id/research/clustering' },
             ],
           },
           {
@@ -201,7 +202,6 @@ const config = {
             text: 'Deployment',
             items: [
               { text: 'Docker', link: '/id/deployment/docker' },
-              { text: 'K3s (Kubernetes)', link: '/id/deployment/k3s' },
               { text: 'Infrastructure', link: '/id/deployment/infrastructure' },
             ],
           },

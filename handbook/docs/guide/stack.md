@@ -30,7 +30,6 @@
 |-----------|-------|
 | **Docker** | Containerization |
 | **Docker Compose** | Local orchestration |
-| **K3s** | Production Kubernetes |
 | **pgBouncer** | PostgreSQL connection pooling |
 | **RabbitMQ** | Async message broker (event bus) |
 | **Redis** | Caching (session, geocoding) |
@@ -71,5 +70,4 @@ protobuf/
 |-------|
 | **Git** + GitHub |
 | **Docker** + Docker Compose |
-| **K3s** (lightweight Kubernetes) |
 | **buf** (protobuf tooling) |

@@ -54,7 +54,7 @@ Lazy code without its check is unfinished: non-trivial logic leaves **ONE** runn
 - **Infra**: RabbitMQ untuk async processing
 - **Protobuf**: Shared contract definitions, tooling pakai `buf`
 - **Auth**: JWT — validate di gateway, forward claims via gRPC metadata
-- **Infra**: Docker + K3s (orchestrasi)
+- **Infra**: Docker Compose (orchestrasi)
 - **Database pooling**: pgBouncer
 
 ## Struktur Project
@@ -70,23 +70,10 @@ ecoguard/
 │   ├── nlp-service/ (future) → Python
 │   └── blockchain-service/ (future, ?) → TBD
 ├── infra/
-│   ├── k3s/                → K3s manifests (StatefulSet, Deployment, Service, Ingress)
-│   │   ├── namespace.yaml
-│   │   ├── postgres-user.yaml
-│   │   ├── postgres-notif.yaml
-│   │   ├── mongodb-twitter.yaml
-│   │   ├── rabbitmq.yaml
-│   │   ├── pgbouncer.yaml          + pgbouncer/pgbouncer.ini
-│   │   ├── gateway.yaml
-│   │   ├── twitter-service.yaml
-│   │   ├── classification-service.yaml
-│   │   ├── user-auth-service.yaml
-│   │   ├── notification-service.yaml
-│   │   └── secrets/db-credentials.yaml
+│   ├── docker-compose.yml
 │   ├── postgres/init.sql
 │   ├── mongodb/init.js
-│   ├── rabbitmq/definitions.json
-│   └── docker-compose.yml
+│   └── rabbitmq/definitions.json
 ├── protobuf/               → Shared proto definitions + buf config
 │   ├── buf.yaml
 │   ├── buf.gen.yaml
@@ -292,29 +279,14 @@ backend/
 
 ```
 infra/
-├── k3s/                              # K3s manifests
-│   ├── namespace.yaml
-│   ├── postgres-user.yaml            # StatefulSet + PVC + Service
-│   ├── postgres-notif.yaml
-│   ├── mongodb-twitter.yaml
-│   ├── rabbitmq.yaml
-│   ├── pgbouncer.yaml                # Deployment + ConfigMap + Service
-│   ├── gateway.yaml                  # Deployment + Service + Ingress
-│   ├── twitter-service.yaml
-│   ├── classification-service.yaml
-│   ├── user-auth-service.yaml
-│   ├── notification-service.yaml
-│   ├── secrets/
-│   │   └── db-credentials.yaml
-│   └── pgbouncer/
-│       └── pgbouncer.ini             # ConfigMap source
+├── docker-compose.yml                # Deployment utama (Docker Compose)
 ├── postgres/
 │   └── init.sql                      # Init script (create databases)
 ├── mongodb/
 │   └── init.js
 ├── rabbitmq/
 │   └── definitions.json              # Exchange + queue setup
-└── docker-compose.yml                # Opsional — dev lokal tanpa K3s
+└── gateway/                          # GraphQL gateway (Rust)
 ```
 
 ### protobuf/

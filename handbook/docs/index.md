@@ -29,13 +29,10 @@ features:
   - icon: 📡
     title: GraphQL Gateway
     details: GraphQL Mesh (Node.js) as unified API gateway, translating GraphQL to gRPC calls.
-  - icon: ☸️
-    title: K3s Orchestration
-    details: Ready for lightweight Kubernetes (K3s) deployment with complete manifests.
+  - icon: 🐳
+    title: Docker Compose
+    details: All services containerized, orchestrated via Docker Compose for local development.
   - icon: 📋
     title: Citizen Reporting
     details: Issue reporting, asset management, email/Telegram notifications, blockchain integration.
-  - icon: 🐳
-    title: Containerized
-    details: All services have Dockerfiles, orchestrated via Docker Compose for local development.
 ---
