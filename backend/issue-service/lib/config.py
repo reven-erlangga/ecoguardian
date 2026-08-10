@@ -1,20 +1,13 @@
 import os
 
-from .vault import read_secret
-
 
 def _resolve_mongo_uri():
-    val = os.getenv("MONGODB_URI")
-    if val:
-        return val
-    vault = read_secret("ecoguard/db", "mongo-twitter-uri")
-    if vault:
-        return vault
-    return "mongodb://mongodb:27017"
+    return os.getenv("MONGODB_URI", "mongodb://mongodb:27017")
 
 
 class Config:
     GRPC_PORT = int(os.getenv("GRPC_PORT", "50057"))
+    SETUP_HTTP_PORT = int(os.getenv("SETUP_HTTP_PORT", "8087"))
     MONGODB_URI = _resolve_mongo_uri()
     RABBITMQ_URI = os.getenv("RABBITMQ_URI", "amqp://guest:guest@rabbitmq:5672")
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")

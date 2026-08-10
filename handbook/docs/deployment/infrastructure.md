@@ -30,7 +30,3 @@ Management UI: `http://localhost:15672` (guest/guest)
 ## Redis
 
 Caching for NLP Service geocoding results. Port `:6379`.
-
-## Vault
-
-Secret management for DB credentials, API keys. Dev mode: token `root`.

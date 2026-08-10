@@ -1,16 +1,9 @@
 import os
-from .vault import read_secret
 
 
 def _resolve_jwt_secret() -> str:
-    """Chain: env var → Vault → local fallback."""
-    val = os.getenv("JWT_SECRET")
-    if val:
-        return val
-    vault_val = read_secret("ecoguard/db", "jwt-secret")
-    if vault_val:
-        return vault_val
-    return "ecoguard-local-dev-fallback-32chars!!!"
+    """Chain: env var → local fallback."""
+    return os.getenv("JWT_SECRET") or "ecoguard-local-dev-fallback-32chars!!!"
 
 
 class Config:

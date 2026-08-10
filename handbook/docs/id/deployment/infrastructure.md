@@ -13,7 +13,6 @@ Menjalankan semua services + infrastruktur:
 - MongoDB (twitter + issue + blockchain)
 - RabbitMQ (message queue)
 - Redis (caching)
-- Vault (secret management)
 
 ## PostgreSQL
 
@@ -71,14 +70,3 @@ Event bus untuk async communication.
 ## Redis
 
 Digunakan oleh NLP Service untuk caching geocoding results.
-
-## Vault
-
-Secret management untuk menyimpan credentials (database, API keys).
-
-Development mode: `VAULT_DEV_ROOT_TOKEN_ID=root`
-
-```bash
-# Contoh: baca secret
-vault kv get ecoguard/db/mongo-twitter-uri
-```

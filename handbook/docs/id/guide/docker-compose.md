@@ -31,10 +31,6 @@ services:
   redis:
     image: redis:7-alpine
     ports: ["6379:6379"]
-
-  vault:
-    image: hashicorp/vault:1.18
-    ports: ["8200:8200"]
 ```
 
 ### Backend Services

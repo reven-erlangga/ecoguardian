@@ -4,7 +4,6 @@ Image upload and management via **ImageKit** cloud storage.
 
 - **Python** (Flask + grpcio)
 - **ImageKit** — cloud image hosting
-- **Vault** — API key management
 
 **Ports**: `50058` (gRPC), `8088` (HTTP)
 

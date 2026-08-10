@@ -7,7 +7,6 @@ Implementasi **simple blockchain** untuk mencatat hasil klasifikasi dan resolusi
 - **Python** (Flask + grpcio)
 - **MongoDB** — penyimpanan blockchain + blocks
 - **RabbitMQ** — publish event
-- **Vault** — secret management
 
 ## Lokasi Kode
 

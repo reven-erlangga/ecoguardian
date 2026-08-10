@@ -1,16 +1,8 @@
 import os
 
-from .vault import read_secret
-
 
 def _resolve_mongo_uri():
-    val = os.environ.get("MONGODB_URI")
-    if val:
-        return val
-    vault = read_secret("ecoguard/db", "mongo-twitter-uri")
-    if vault:
-        return vault
-    return "mongodb://mongodb:27017"
+    return os.environ.get("MONGODB_URI", "mongodb://mongodb:27017")
 
 
 class Config:

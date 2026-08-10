@@ -33,7 +33,6 @@
 | **pgBouncer** | PostgreSQL connection pooling |
 | **RabbitMQ** | Async message broker (event bus) |
 | **Redis** | Caching (session, geocoding) |
-| **Vault** | Secret management |
 | **ImageKit** | Cloud image upload & optimization |
 
 ## Protobuf

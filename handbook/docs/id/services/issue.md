@@ -7,7 +7,6 @@ Mengelola **laporan masalah** (issues) dari warga. CRUD issue, status tracking, 
 - **Python** (grpcio only, no Flask)
 - **MongoDB** — penyimpanan issues
 - **RabbitMQ** — publish event `issue.created`
-- **Vault** — secret management
 
 ## Lokasi Kode
 

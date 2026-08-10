@@ -8,7 +8,6 @@ Mengirim notifikasi via **Email** dan **Telegram**, serta menyimpan riwayat noti
 - **PostgreSQL** — riwayat notifikasi
 - **RabbitMQ** — consume event dari service lain
 - **psycopg2** — PostgreSQL driver
-- **hvac** — Vault client
 
 ## Lokasi Kode
 

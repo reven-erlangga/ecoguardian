@@ -34,7 +34,6 @@ ecoguard-pgbouncer       # Connection pool
 ecoguard-mongo           # MongoDB (twitter, issue, blockchain)
 ecoguard-rabbitmq        # Message queue + management UI
 ecoguard-redis           # Cache
-ecoguard-vault           # Secret management
 ecoguard-classification  # Image classification
 ecoguard-nlp             # NLP processing
 ecoguard-user-auth       # Auth service
@@ -124,7 +123,6 @@ docker compose down -v
 | 5672 | RabbitMQ (AMQP) |
 | 15672 | RabbitMQ (Management UI) |
 | 6379 | Redis |
-| 8200 | Vault |
 | 27017 | MongoDB |
 | 50051 | User Auth (gRPC) |
 | 50052 | Twitter (gRPC) |

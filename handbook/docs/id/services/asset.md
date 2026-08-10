@@ -6,7 +6,6 @@ Upload dan manajemen **gambar/aset** menggunakan **ImageKit** cloud storage.
 
 - **Python** (Flask + grpcio)
 - **ImageKit** — cloud image upload & optimization
-- **Vault** — secret management untuk API keys
 - **Pillow** — image processing
 
 ## Lokasi Kode
@@ -15,7 +14,6 @@ Upload dan manajemen **gambar/aset** menggunakan **ImageKit** cloud storage.
 backend/asset-service/
 ├── lib/
 │   ├── imagekit.py       # ImageKit integration
-│   └── vault.py
 ├── common/
 │   ├── config.py
 │   └── grpc_server.py

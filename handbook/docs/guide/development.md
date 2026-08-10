@@ -17,7 +17,7 @@ Run only databases and message queue via Docker:
 
 ```bash
 cd infra
-docker compose up postgres-user postgres-notif mongodb rabbitmq redis vault -d
+docker compose up postgres-user postgres-notif mongodb rabbitmq redis -d
 ```
 
 ### 2. Run Service Directly

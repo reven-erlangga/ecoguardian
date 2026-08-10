@@ -1,12 +1,7 @@
 import os
-from .vault import read_secret
 
 def _resolve(key: str, fallback: str = "") -> str:
-    val = os.getenv(key)
-    if val: return val
-    vault = read_secret("ecoguard/db", key.lower().replace("_", "-"))
-    if vault: return vault
-    return fallback
+    return os.getenv(key) or fallback
 
 class Config:
     IMAGEKIT_PUBLIC_KEY = _resolve("IMAGEKIT_PUBLIC_KEY")

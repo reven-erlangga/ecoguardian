@@ -1,16 +1,11 @@
 import os
 
-from .vault import read_secret
-
 
 def _resolve_db_url():
-    val = os.environ.get("DATABASE_URL")
-    if val:
-        return val
-    vault = read_secret("ecoguard/db", "postgres-notif-dsn")
-    if vault:
-        return vault
-    return "postgresql://ecoguard:ecoguard_dev@localhost:5433/ecoguard_notif"
+    return os.environ.get(
+        "DATABASE_URL",
+        "postgresql://ecoguard:ecoguard_dev@localhost:5433/ecoguard_notif",
+    )
 
 
 class Config:

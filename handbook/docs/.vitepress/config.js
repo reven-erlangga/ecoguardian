@@ -100,7 +100,6 @@ const config = {
               { text: 'MongoDB', link: '/infrastructure/mongodb' },
               { text: 'RabbitMQ', link: '/infrastructure/rabbitmq' },
               { text: 'Redis', link: '/infrastructure/redis' },
-              { text: 'Vault', link: '/infrastructure/vault' },
             ],
           },
           {
@@ -193,7 +192,6 @@ const config = {
               { text: 'MongoDB', link: '/id/infrastructure/mongodb' },
               { text: 'RabbitMQ', link: '/id/infrastructure/rabbitmq' },
               { text: 'Redis', link: '/id/infrastructure/redis' },
-              { text: 'Vault', link: '/id/infrastructure/vault' },
             ],
           },
           {

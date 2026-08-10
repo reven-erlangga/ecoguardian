@@ -20,7 +20,6 @@ graph TB
         RQ[(RabbitMQ)]
         RD[(Redis)]
         PB[pgBouncer]
-        VT[Vault]
     end
 
     UA --> PB --> PG
@@ -33,9 +32,6 @@ graph TB
     CL -.-> RQ
     IS -.-> RQ
     NL --> RD
-    UA -.-> VT
-    NO -.-> VT
-    TW -.-> VT
 ```
 
 ## Components
@@ -47,7 +43,6 @@ graph TB
 | [MongoDB](/infrastructure/mongodb) | 27017 | `mongo:7` | Twitter, Issue, Blockchain |
 | [RabbitMQ](/infrastructure/rabbitmq) | 5672 / 15672 | `rabbitmq:3-management-alpine` | Event bus |
 | [Redis](/infrastructure/redis) | 6379 | `redis:7-alpine` | NLP cache |
-| [Vault](/infrastructure/vault) | 8200 | `hashicorp/vault:1.18` | Secret management |
 
 ## Quick Start
 

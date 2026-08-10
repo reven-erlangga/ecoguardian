@@ -17,7 +17,7 @@ Untuk development lokal, cukup jalankan infrastruktur via Docker:
 
 ```bash
 cd infra
-docker compose up postgres-user postgres-notif mongodb rabbitmq redis vault -d
+docker compose up postgres-user postgres-notif mongodb rabbitmq redis -d
 ```
 
 Ini akan menjalankan database dan message queue tanpa backend services.

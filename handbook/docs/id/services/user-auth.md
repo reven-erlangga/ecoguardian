@@ -8,7 +8,6 @@ Mengelola **user CRUD**, **registrasi**, **login**, **JWT token**, dan **validas
 - **PostgreSQL** — database user
 - **bcrypt** — password hashing
 - **PyJWT** — token generation & validation
-- **hvac** — Vault client untuk secret management
 
 ## Lokasi Kode
 
