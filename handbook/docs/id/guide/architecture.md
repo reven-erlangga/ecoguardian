@@ -15,7 +15,7 @@ graph TB
     end
 
     subgraph Services["BACKEND SERVICES"]
-        TS[Twitter Service<br/>Rust · MongoDB]
+        TS[Twitter Service<br/>Node.js · MongoDB]
         CS[Classification Service<br/>Python · ONNX]
         US[User & Auth Service<br/>Python · PostgreSQL]
         NS[Notification Service<br/>Python · PostgreSQL]

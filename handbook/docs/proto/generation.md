@@ -67,21 +67,9 @@ python -m grpc_tools.protoc \
   ../../protobuf/classification/service.proto
 ```
 
-## Generate Rust Stubs
+## Generate Node.js Stubs
 
-Rust uses `tonic-build` in `build.rs` — automatically compiled on each `cargo build`:
-
-```rust
-// backend/twitter-service/build.rs
-fn main() {
-    tonic_build::configure()
-        .build_client(true)
-        .build_server(true)
-        .include_dot_paths(true)
-        .compile(&["../../protobuf/twitter/service.proto"], &["../../protobuf"])
-        .unwrap();
-}
-```
+Twitter Service (Node.js) memuat proto langsung saat runtime via `@grpc/proto-loader` — tidak perlu generate stubs terpisah. Proto dibaca dari `protobuf/` (di-copy ke `/app/proto` saat build Docker).
 
 ## Output Structure
 
@@ -90,5 +78,5 @@ Setiap service punya generated stubs di direktori masing-masing:
 | Service | Directory | Tools |
 |---------|-----------|-------|
 | Python services | `proto/` or `protogen/` | `grpc_tools.protoc` |
-| Rust services | `src/protos/` | `tonic-build` |
+| Twitter Service (Node) | runtime `proto-loader` | `@grpc/proto-loader` |
 | Gateway | `.mesh/` (cache) | GraphQL Mesh otomatis |

@@ -5,8 +5,7 @@ Panduan development untuk mengerjakan service Ecoguard.
 ## Prasyarat
 
 - Python 3.12+ (backend Python services)
-- Rust toolchain (twitter-service)
-- Node.js 18+ (gateway, frontend)
+- Node.js 18+ (gateway, twitter-service, frontend)
 - Docker Desktop (infrastruktur: PostgreSQL, MongoDB, RabbitMQ)
 - Docker Compose
 
@@ -33,9 +32,10 @@ cd backend/classification-service
 pip install -r requirements.txt
 python server.py
 
-# Rust service (butuh Rust toolchain)
-cd backend/twitter-service
-cargo run
+# Twitter service (Node.js)
+cd backend/twitter-service-node
+npm install
+npm start
 ```
 
 ### 3. Jalankan Gateway
@@ -98,11 +98,11 @@ cd backend/classification-service
 pytest tests/
 ```
 
-### Rust Service
+### Twitter Service (Node.js)
 
 ```bash
-cd backend/twitter-service
-cargo test
+cd backend/twitter-service-node
+npm run check
 ```
 
 ### Frontend

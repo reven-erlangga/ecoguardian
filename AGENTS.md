@@ -44,7 +44,7 @@ Lazy code without its check is unfinished: non-trivial logic leaves **ONE** runn
 
 - **Frontend**: Astro + React islands + URQL (GraphQL client)
 - **Gateway**: Rust (`Rocket` + `async-graphql` + `tonic`)
-- **Twitter Service**: Rust (`Rocket` + `tonic` + MongoDB)
+- **Twitter Service**: Node.js (`gRPC` + `Hono` + MongoDB)
 - **Classification Service**: Python (`Flask` + `grpcio`)
 - **User & Auth Service**: Python (`Flask` + `grpcio` + Postgres)
 - **Notification Service**: Python (`Flask` + `grpcio` + Postgres)
@@ -123,7 +123,7 @@ ecoguard/
 ┌────────────┐   ┌──────────────┐   ┌──────────────┐   ┌────────────────┐
 │  Twitter   │   │ Classifictn  │   │  User & Auth │   │ Notification   │
 │  Service   │   │   Service    │   │   Service    │   │   Service      │
-│  (Rust)    │   │ (Python)     │   │ (Python)     │   │  (Python)      │
+│  (Node.js) │   │ (Python)     │   │ (Python)     │   │  (Python)      │
 ├────────────┤   ├──────────────┤   ├──────────────┤   ├────────────────┤
 │ MongoDB    │   │ ONNX Model   │   │ Postgres     │   │ Postgres       │
 │ (tweets)   │   │ (gambar)     │   │ (relasi)     │   │ (relasi)       │
@@ -189,29 +189,21 @@ backend/
 │   ├── Dockerfile
 │   └── .env.example
 │
-├── twitter-service/                  # Rust — Rocket + tonic + MongoDB
+├── twitter-service-node/             # Node.js — gRPC + Hono + MongoDB
 │   ├── src/
-│   │   ├── main.rs
-│   │   ├── ingest/                   # Feature: ingest tweet
-│   │   │   ├── mod.rs
-│   │   │   ├── handler.rs
-│   │   │   ├── service.rs
-│   │   │   └── repository.rs
-│   │   ├── query/                    # Feature: query tweet
-│   │   │   ├── mod.rs
-│   │   │   ├── handler.rs
-│   │   │   ├── service.rs
-│   │   │   └── repository.rs
-│   │   ├── rabbitmq/                 # Publisher ke event bus
-│   │   │   ├── mod.rs
-│   │   │   └── publisher.rs
-│   │   └── common/
-│   │       ├── mod.rs
-│   │       ├── config.rs
-│   │       └── mongo.rs
-│   ├── Cargo.toml
-│   ├── Dockerfile
-│   └── .env.example
+│   │   ├── server.js                 # Entry point
+│   │   ├── grpc.js                   # TwitterService gRPC server
+│   │   ├── http.js                   # Hono REST endpoints
+│   │   ├── ingest.js                 # Feature: ingest pipeline (NLP→classify→issue)
+│   │   ├── watcher.js                # Poll Recent Search → auto-ingest
+│   │   ├── twitter.js                # OAuth 2.0 posting + mention search
+│   │   ├── clients.js                # Downstream gRPC clients (Classify/NLP/Blockchain/Asset)
+│   │   ├── rabbitmq.js               # Event publisher
+│   │   ├── mongo.js                  # MongoDB connection
+│   │   └── config.js                 # Config from env
+│   ├── test/                         # Self-check
+│   ├── package.json
+│   └── Dockerfile
 │
 ├── user-auth-service/                # Python — Flask + grpcio + Postgres
 │   ├── user/                         # Feature: user CRUD

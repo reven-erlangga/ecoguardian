@@ -50,7 +50,7 @@ ecoguard/
 ├── frontend/                    # Astro + React
 ├── backend/
 │   ├── gateway/                 # Rust — GraphQL gateway
-│   ├── twitter-service/         # Rust — Twitter ingestion
+│   ├── twitter-service-node/  # Node.js — Twitter ingestion
 │   ├── classification-service/  # Python — ONNX inference
 │   ├── user-auth-service/       # Python — Auth + user management
 │   ├── notification-service/    # Python — Email/Telegram
@@ -82,7 +82,7 @@ cd ecoguardian
 | Service | Bahasa | Database | Deskripsi |
 |---------|--------|----------|-----------|
 | **gateway** | Rust | - | GraphQL → gRPC translator, JWT auth |
-| **twitter-service** | Rust | MongoDB | Ingest & query tweet |
+| **twitter-service** | Node.js | MongoDB | Ingest & query tweet |
 | **classification-service** | Python | ONNX model | Klasifikasi gambar |
 | **user-auth-service** | Python | PostgreSQL | User CRUD + JWT generation |
 | **notification-service** | Python | PostgreSQL | Email/Telegram via RabbitMQ |

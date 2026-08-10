@@ -5,8 +5,7 @@ Guide for developing Ecoguard services locally.
 ## Prerequisites
 
 - Python 3.12+ (Python services)
-- Rust toolchain (twitter-service)
-- Node.js 18+ (gateway, frontend)
+- Node.js 18+ (gateway, twitter-service, frontend)
 - Docker Desktop (infrastructure)
 - Docker Compose
 
@@ -29,11 +28,11 @@ cd backend/classification-service
 pip install -r requirements.txt
 python server.py
 
-# Rust
-cd backend/twitter-service
-cargo run
+# Twitter (Node.js)
+cd backend/twitter-service-node
+npm install
+npm start
 ```
-
 ### 3. Run Gateway
 
 ```bash
@@ -65,9 +64,9 @@ buf generate
 cd backend/classification-service
 pytest tests/
 
-# Rust
-cd backend/twitter-service
-cargo test
+# Twitter (Node.js)
+cd backend/twitter-service-node
+npm run check
 
 # Frontend
 cd frontend

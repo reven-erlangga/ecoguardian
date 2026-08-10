@@ -15,7 +15,7 @@
 | Service | Language | Framework | Database | Communication |
 |---------|----------|-----------|----------|---------------|
 | **Gateway** | Node.js | GraphQL Mesh | - | GraphQL → gRPC |
-| **Twitter Service** | Rust | Rocket + tonic | MongoDB | gRPC + RabbitMQ |
+| **Twitter Service** | Node.js | gRPC + Hono | MongoDB | gRPC + RabbitMQ |
 | **Classification** | Python | Flask + grpcio | ONNX model | gRPC |
 | **User & Auth** | Python | Flask + grpcio | PostgreSQL | gRPC |
 | **Notification** | Python | Flask + grpcio | PostgreSQL | gRPC + RabbitMQ |

@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: ecoguard
       POSTGRES_PASSWORD: ecoguard_dev
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - pg-user-data:/var/lib/postgresql/data
     healthcheck:
@@ -70,7 +70,7 @@ services:
     container_name: ecoguard-mongo
     networks: [ecoguard]
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
       - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js
@@ -103,7 +103,7 @@ services:
     container_name: ecoguard-redis
     networks: [ecoguard]
     ports:
-      - "6379:6379"
+      - "6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -134,7 +134,8 @@ services:
 
   classification-service:
     build:
-      context: ../backend/classification-service
+      context: ..
+      dockerfile: backend/classification-service/Dockerfile
     image: ecoguard/classification-service:latest
     container_name: ecoguard-classification
     networks: [ecoguard]
@@ -145,6 +146,9 @@ services:
       GRPC_PORT: "50053"
       FLASK_PORT: "8083"
       RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
+      TRAINING_DATA_DIR: "/app/training-data"
+    volumes:
+      - training-data:/app/training-data
     depends_on:
       rabbitmq: { condition: service_healthy }
 
@@ -196,7 +200,7 @@ services:
   twitter-service:
     build:
       context: ..
-      dockerfile: backend/twitter-service/Dockerfile
+      dockerfile: backend/twitter-service-node/Dockerfile
     image: ecoguard/twitter-service:latest
     container_name: ecoguard-twitter
     networks: [ecoguard]
@@ -210,7 +214,19 @@ services:
       RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
       CLASSIFICATION_GRPC_ADDR: "http://classification-service:50053"
       NLP_GRPC_ADDR: "http://nlp-service:50055"
+      TWITTER_CONSUMER_KEY: "${TWITTER_CONSUMER_KEY:-}"
+      TWITTER_CONSUMER_SECRET: "${TWITTER_CONSUMER_SECRET:-}"
+      TWITTER_BEARER_TOKEN: "${TWITTER_BEARER_TOKEN:-}"
+      TWITTER_ACCESS_TOKEN: "${TWITTER_ACCESS_TOKEN:-}"
+      TWITTER_ACCESS_TOKEN_SECRET: "${TWITTER_ACCESS_TOKEN_SECRET:-}"
+      TWITTER_HANDLE: "${TWITTER_HANDLE:-mnatori26}"
+      TWITTER_MENTION_RULE: "${TWITTER_MENTION_RULE:-#LaporinAja}"
+      TWITTER_OAUTH2_ACCESS_TOKEN: "${TWITTER_OAUTH2_ACCESS_TOKEN:-}"
+      TWITTER_OAUTH2_REFRESH_TOKEN: "${TWITTER_OAUTH2_REFRESH_TOKEN:-}"
+      TWITTER_OAUTH2_CLIENT_ID: "${TWITTER_OAUTH2_CLIENT_ID:-}"
+      TWITTER_OAUTH2_CLIENT_SECRET: "${TWITTER_OAUTH2_CLIENT_SECRET:-}"
       ASSET_GRPC_ADDR: "http://asset-service:50058"
+      BLOCKCHAIN_GRPC_ADDR: "http://blockchain-service:50056"
     depends_on:
       mongodb: { condition: service_healthy }
       rabbitmq: { condition: service_healthy }
@@ -229,7 +245,7 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       GRPC_PORT: "50056"
-      MONGODB_URI: "mongodb://host.docker.internal:27017"
+      MONGODB_URI: "mongodb://mongodb:27017"
       BLOCKCHAIN_DB: "ecoguard_blockchain"
       POW_DIFFICULTY: "4"
       RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
@@ -244,8 +260,10 @@ services:
     networks: [ecoguard]
     ports:
       - "50057:50057"
+      - "8087:8087"
     environment:
       GRPC_PORT: "50057"
+      SETUP_HTTP_PORT: "8087"
       MONGODB_URI: "mongodb://mongodb:27017"
       RABBITMQ_URI: "amqp://guest:guest@rabbitmq:5672"
     depends_on:
@@ -306,6 +324,8 @@ services:
       - "4321:4321"
     environment:
       PUBLIC_TWITTER_SERVICE_URL: "http://twitter-service:8000"
+      PUBLIC_ISSUE_SETUP_URL: "http://issue-service:8087"
+      PUBLIC_CLASSIFICATION_SETUP_URL: "http://classification-service:8083"
       HOST: "0.0.0.0"
     depends_on:
       gateway: { condition: service_started }
@@ -325,6 +345,7 @@ services:
 
 # ─── Volumes ─────────────────────────────────────────────
 volumes:
+  training-data:
   pg-user-data:
   pg-notif-data:
   mongo-data:
