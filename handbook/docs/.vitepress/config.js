@@ -69,7 +69,6 @@ const config = {
             text: 'Research',
             items: [
               { text: 'Overview', link: '/research/overview' },
-              { text: 'Scrapers', link: '/research/scrapers' },
               { text: 'Training', link: '/research/training' },
               { text: 'Clustering', link: '/research/clustering' },
             ],
@@ -163,7 +162,6 @@ const config = {
             text: 'Research',
             items: [
               { text: 'Overview', link: '/id/research/overview' },
-              { text: 'Scrapers', link: '/id/research/scrapers' },
               { text: 'Training', link: '/id/research/training' },
               { text: 'Clustering', link: '/id/research/clustering' },
             ],
