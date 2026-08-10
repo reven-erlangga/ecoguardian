@@ -2,14 +2,19 @@
   import { dashboardStore } from '../../stores/dashboard.stores';
   import { gridClass, cardClass, labelClass, valueClass, barTrackClass, barFillClass, TYPE_COLORS, DEFAULT_COLORS } from './stats-grid.components';
 
-  const stats = dashboardStore.state.data.stats;
+  // Read through the full reactive path so Svelte tracks deep updates to the
+  // store's stats object (fetch() replaces state.data.stats with a new object).
+  const stats = $derived(dashboardStore.state.data.stats);
+
+  // GraphQL Mesh mengirim 0 untuk int32 sebagai null — tampilkan sebagai 0.
+  const n = (v: number | null | undefined): number => (v == null ? 0 : v);
 
   const cards = $derived([
-    { label: 'Tweets', value: stats.totalTweets, color: 'bg-primary' },
-    { label: 'Total Issue', value: stats.totalIssues, color: 'bg-secondary' },
-    { label: 'Open', value: stats.openIssues, color: 'bg-yellow-500' },
-    { label: 'Resolved', value: stats.resolvedIssues, color: 'bg-green-500' },
-    { label: 'Unread', value: stats.unreadNotifications, color: 'bg-accent' },
+    { label: 'Tweets', value: n(stats.totalTweets), color: 'bg-primary' },
+    { label: 'Total Issue', value: n(stats.totalIssues), color: 'bg-secondary' },
+    { label: 'Open', value: n(stats.openIssues), color: 'bg-yellow-500' },
+    { label: 'Resolved', value: n(stats.resolvedIssues), color: 'bg-green-500' },
+    { label: 'Unread', value: n(stats.unreadNotifications), color: 'bg-accent' },
   ]);
 
   const typeBreakdown = $derived.by(() => {

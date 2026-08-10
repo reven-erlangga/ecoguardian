@@ -16,10 +16,10 @@ export const notifStore = {
 
   // --- Actions ---
   actions: {
-    async fetch(page = 1, perPage = 20) {
+    async fetch(userId = '', page = 1, perPage = 20) {
       state.meta = { loading: true, message: '' };
       try {
-        const r = await fetchNotifications(page, perPage);
+        const r = await fetchNotifications(userId, page, perPage);
         state.data.notifs = r.notifs;
         state.data.total = r.total;
         state.meta = { loading: false, message: '' };
@@ -30,9 +30,9 @@ export const notifStore = {
       }
     },
 
-    async markRead(id: string) {
+    async markRead(id: string, userId = '') {
       try {
-        const ok = await markReadSvc(id);
+        const ok = await markReadSvc(id, userId);
         if (ok) {
           const idx = state.data.notifs.findIndex((n) => n.id === id);
           if (idx !== -1) state.data.notifs[idx] = { ...state.data.notifs[idx], status: 'read' };
@@ -44,9 +44,9 @@ export const notifStore = {
       }
     },
 
-    async markAllRead() {
+    async markAllRead(userId = '') {
       try {
-        const ok = await markAllReadSvc();
+        const ok = await markAllReadSvc(userId);
         if (ok) {
           state.data.notifs = state.data.notifs.map((n) => ({ ...n, status: 'read' }));
         }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { useNotifPanel } from './notif-panel.components';
   import Button from '@components/atoms/button/Button.svelte';
   import {
@@ -7,7 +8,9 @@
     loadingClass, emptyClass,
   } from './notif-panel.components';
 
-  const { store, unreadCount, handleMarkRead, handleMarkAllRead } = useNotifPanel();
+  const { store, unreadCount, handleFetch, handleMarkRead, handleMarkAllRead } = useNotifPanel();
+
+  onMount(() => { handleFetch(); });
 </script>
 
 <div class={containerClass}>

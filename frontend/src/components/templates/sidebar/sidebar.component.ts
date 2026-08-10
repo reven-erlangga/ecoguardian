@@ -3,6 +3,7 @@ import BellIcon from 'phosphor-svelte/lib/BellIcon';
 import MapPinIcon from 'phosphor-svelte/lib/MapPinIcon';
 import CubeIcon from 'phosphor-svelte/lib/CubeIcon';
 import GearIcon from 'phosphor-svelte/lib/GearIcon';
+import WrenchIcon from 'phosphor-svelte/lib/WrenchIcon';
 import type { SidebarGroup } from './sidebar.types';
 
 export const groups: SidebarGroup[] = [
@@ -19,6 +20,7 @@ export const groups: SidebarGroup[] = [
     label: 'Lainnya',
     items: [
       { href: '/settings', label: 'Pengaturan', iconComponent: GearIcon },
+      { href: '/setup', label: 'Setup', iconComponent: WrenchIcon },
     ],
   },
 ];

@@ -1,3 +1,5 @@
+import time
+
 from pymongo import MongoClient, ASCENDING, DESCENDING
 
 from features.clustering import ClusteringService
@@ -8,8 +10,46 @@ class IssueRepository:
         self.client = MongoClient(mongo_uri)
         self.db = self.client["ecoguard_twitter"]
         self.issues = self.db["issues"]
+        self.settings = self.db["settings"]
         self.eps_km = eps_km
         self.min_samples = min_samples
+
+    # ─── Konfigurasi clustering (disimpan di MongoDB, berlaku runtime) ───
+
+    def get_clustering_settings(self) -> dict:
+        """Baca setting clustering dari collection 'settings'.
+
+        Fallback ke nilai env saat service start bila belum pernah disimpan.
+        """
+        doc = self.settings.find_one({"_id": "clustering"})
+        if not doc:
+            return {
+                "eps_km": self.eps_km,
+                "min_pts": self.min_samples,
+                "source": "env-default",
+            }
+        return {
+            "eps_km": float(doc.get("eps_km", self.eps_km)),
+            "min_pts": int(doc.get("min_pts", self.min_samples)),
+            "source": "mongodb",
+            "updated_at": int(doc.get("updated_at", 0)),
+        }
+
+    def save_clustering_settings(self, eps_km: float, min_pts: int) -> dict:
+        """Simpan setting clustering (upsert doc `_id = "clustering"`)."""
+        doc = {
+            "_id": "clustering",
+            "eps_km": float(eps_km),
+            "min_pts": int(min_pts),
+            "updated_at": int(time.time()),
+        }
+        self.settings.replace_one({"_id": "clustering"}, doc, upsert=True)
+        return {
+            "eps_km": doc["eps_km"],
+            "min_pts": doc["min_pts"],
+            "source": "mongodb",
+            "updated_at": doc["updated_at"],
+        }
 
     def list_issues(self, status="", type_filter="", keyword="", created_after=0, page=1, per_page=20):
         query = {}
@@ -40,8 +80,13 @@ class IssueRepository:
         return self.issues.find_one({"_id": issue_id})
 
     def list_clusters(self):
-        """Run DBSCAN clustering on all issues with valid locations."""
-        clustering = ClusteringService(eps_km=self.eps_km, min_samples=self.min_samples)
+        """Run DBSCAN clustering on all issues with valid locations.
+
+        eps/min_pts dibaca dari settings MongoDB saat runtime sehingga
+        perubahan via /setup/clustering langsung berlaku tanpa restart.
+        """
+        s = self.get_clustering_settings()
+        clustering = ClusteringService(eps_km=s["eps_km"], min_samples=s["min_pts"])
         all_issues = list(self.issues.find({
             "location": {"$ne": None},
             "location.lat": {"$ne": None},

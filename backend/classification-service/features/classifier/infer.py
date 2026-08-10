@@ -57,6 +57,11 @@ class ONNXInferenceEngine:
             self.session = None
             print(f"⚠️  Failed to load ONNX model: {e}")
 
+    def reload(self):
+        """Reload labels + model — dipanggil setelah training ulang selesai."""
+        self._load_labels()
+        self._load_model()
+
     def predict(self, input_tensor):
         if self.session is not None:
             feed = {self._input_name: input_tensor, **self._extra_feeds}

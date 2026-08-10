@@ -88,6 +88,16 @@ sources:
             includeDirs:
               - proto
 
+  - name: Dashboard
+    handler:
+      grpc:
+        endpoint: issue-service:50057
+        source:
+          file: proto/dashboard/service.proto
+          load:
+            includeDirs:
+              - proto
+
   - name: Asset
     handler:
       grpc:

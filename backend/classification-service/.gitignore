@@ -12,3 +12,7 @@ venv/
 
 # Env
 .env
+
+# Dataset retrain (auto-accumulate gambar masuk)
+training-data/
+retrain-data/

@@ -7,6 +7,7 @@ import os
 import sys
 import threading
 from concurrent import futures
+from pathlib import Path
 
 import grpc
 from flask import Flask, jsonify, request
@@ -18,6 +19,7 @@ sys.path.insert(0, _proto)
 from classification import classification_pb2, service_pb2, service_pb2_grpc
 from common.config import Config
 from features.classifier import ClassificationService, ONNXInferenceEngine
+from features.retrain import RetrainManager
 from rabbitmq import EventPublisher
 
 # ─── Init Engine ──────────────────────────────────────────
@@ -25,6 +27,12 @@ cfg = Config()
 engine = ONNXInferenceEngine(model_path=cfg.MODEL_PATH, labels_path=cfg.LABELS_PATH)
 publisher = EventPublisher(rabbitmq_uri=cfg.RABBITMQ_URI)
 svc = ClassificationService(engine, publisher=publisher)
+manager = RetrainManager(
+    data_root=cfg.TRAINING_DATA_DIR,
+    model_path=cfg.MODEL_PATH,
+    labels_path=cfg.LABELS_PATH,
+    engine=engine,
+)
 
 
 # ─── gRPC Servicer ────────────────────────────────────────
@@ -70,6 +78,14 @@ class GrpcServicer(service_pb2_grpc.ClassificationServiceServicer):
 app = Flask(__name__)
 
 
+@app.after_request
+def add_cors(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+
 @app.route("/health")
 def health():
     return jsonify({"status": "ok", "service": "classification"})
@@ -103,6 +119,69 @@ def classify_multi_http():
     ]
     result = svc.classify_multiple(images)
     return jsonify(result)
+
+
+# ─── Setup API: retrain model & dataset ──────────────────
+
+@app.route("/setup/retrain", methods=["POST"])
+def setup_retrain():
+    """Mulai training ulang model -> ONNX baru.
+
+    Body: {"epochs": 20, "batch_size": 32,
+           "samples": [{"label": "flood", "url": "https://..."}, ...]}
+    `samples` opsional — tanpa samples, retrain memakai gambar yang sudah
+    terkumpul di training-data/ (auto-save dari klasifikasi / upload dataset).
+    """
+    body = request.get_json(silent=True) or {}
+    try:
+        epochs = int(body.get("epochs", 20))
+        batch_size = int(body.get("batch_size", 32))
+    except (TypeError, ValueError):
+        return jsonify({"error": "'epochs'/'batch_size' harus angka"}), 400
+    samples = body.get("samples") or []
+    if not isinstance(samples, list):
+        return jsonify({"error": "'samples' harus berupa array"}), 400
+
+    result, code = manager.start(epochs=epochs, batch_size=batch_size, samples=samples)
+    return jsonify(result), code
+
+
+@app.route("/setup/retrain/status", methods=["GET"])
+def setup_retrain_status():
+    return jsonify(manager.status())
+
+
+@app.route("/setup/dataset/upload", methods=["POST"])
+def setup_dataset_upload():
+    """Upload gambar dataset retrain (multipart: files 'images' + field 'label')."""
+    files = request.files.getlist("images")
+    label = (request.form.get("label") or "unknown").strip().replace("/", "_")
+    if not files:
+        return jsonify({"error": "no image files"}), 400
+
+    label_dir = Path(cfg.TRAINING_DATA_DIR) / label
+    label_dir.mkdir(parents=True, exist_ok=True)
+    saved = 0
+    for f in files:
+        if not f.filename:
+            continue
+        target = label_dir / f.filename
+        if target.exists():
+            continue
+        target.write_bytes(f.read())
+        saved += 1
+    return jsonify({"saved": saved, "label": label, "total": len(files)})
+
+
+@app.route("/setup/dataset/stats", methods=["GET"])
+def setup_dataset_stats():
+    root = Path(cfg.TRAINING_DATA_DIR)
+    stats = {}
+    if root.exists():
+        for d in sorted(root.iterdir()):
+            if d.is_dir():
+                stats[d.name] = len(list(d.glob("*")))
+    return jsonify({"labels": stats, "total": sum(stats.values())})
 
 
 # ─── Start Servers ────────────────────────────────────────

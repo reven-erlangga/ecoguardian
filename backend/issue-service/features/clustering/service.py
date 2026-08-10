@@ -150,10 +150,11 @@ class ClusteringService:
             if cid is None or cid < 0:
                 continue
             loc = issue["location"]
-            clusters.setdefault(cid, {"lats": [], "lons": [], "types": set(), "addresses": set()})
+            clusters.setdefault(cid, {"lats": [], "lons": [], "types": set(), "addresses": set(), "issue_ids": []})
             clusters[cid]["lats"].append(loc["lat"])
             clusters[cid]["lons"].append(loc["lon"])
             clusters[cid]["types"].add(issue.get("type", "unknown"))
+            clusters[cid]["issue_ids"].append(str(issue.get("_id", issue.get("id", ""))))
             if loc.get("address"):
                 clusters[cid]["addresses"].add(loc["address"])
 
@@ -166,6 +167,7 @@ class ClusteringService:
                 "issue_count": len(d["lats"]),
                 "types": sorted(d["types"]),
                 "addresses": sorted(d["addresses"])[:5],
+                "issue_ids": d["issue_ids"],
             })
         result.sort(key=lambda x: x["issue_count"], reverse=True)
         return result

@@ -1,9 +1,38 @@
 """Dashboard aggregation — issue counts, recent activity, etc."""
 
 import grpc
+from datetime import datetime, timezone
 
 from dashboard import dashboard_pb2, service_pb2_grpc
 from lib.db import IssueRepository
+
+
+def _epoch_seconds(value) -> int:
+    """Konversi created_at jadi epoch seconds.
+
+    Twitter-service menyimpan created_at sebagai ISO string (mis.
+    "2026-08-04T23:08:13.056182871Z") atau BSON datetime. Issue-service
+    menyimpan sebagai int. Handle ketiganya.
+    """
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        s = value.strip()
+        if s.isdigit() or (s.startswith("-") and s[1:].isdigit()):
+            return int(s)
+        try:
+            dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return int(dt.timestamp())
+        except (ValueError, TypeError):
+            return 0
+    if hasattr(value, "timestamp"):  # datetime / datetime.datetime
+        try:
+            return int(value.timestamp())
+        except Exception:
+            return 0
+    return 0
 
 
 class DashboardServicer(service_pb2_grpc.DashboardServiceServicer):
@@ -39,7 +68,7 @@ class DashboardServicer(service_pb2_grpc.DashboardServiceServicer):
                 rt.tweet_id = tw.get("tweet_id", "")
                 rt.text = tw.get("paraphrased_text") or tw.get("text", "")
                 rt.author_username = tw.get("author_username", "")
-                rt.created_at = int(tw.get("created_at", 0))
+                rt.created_at = _epoch_seconds(tw.get("created_at", 0))
                 cls = tw.get("classification", {}) or {}
                 rt.classification_label = (cls.get("text", {}) or {}).get("label", "")
 
@@ -50,7 +79,7 @@ class DashboardServicer(service_pb2_grpc.DashboardServiceServicer):
                 ri.status = iss.get("status", "open")
                 loc = iss.get("location", {}) or {}
                 ri.address = loc.get("address", "")
-                ri.created_at = int(iss.get("created_at", 0))
+                ri.created_at = _epoch_seconds(iss.get("created_at", 0))
 
             return stats
         except Exception as e:

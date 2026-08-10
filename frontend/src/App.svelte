@@ -9,12 +9,14 @@
   // Page components
   import DashboardPage from './routes/DashboardPage.svelte';
   import IssuesPage from './routes/IssuesPage.svelte';
+  import ClusterDetailPage from './routes/ClusterDetailPage.svelte';
   import IssueDetailPage from './routes/IssueDetailPage.svelte';
   import BlockchainPage from './routes/BlockchainPage.svelte';
   import NotificationsPage from './routes/NotificationsPage.svelte';
   import TweetsPage from './routes/TweetsPage.svelte';
   import SimulasiPage from './routes/SimulasiPage.svelte';
   import SettingsPage from './routes/SettingsPage.svelte';
+  import SetupPage from './routes/SetupPage.svelte';
   import LoginPage from './routes/LoginPage.svelte';
   import RegisterPage from './routes/RegisterPage.svelte';
 
@@ -73,6 +75,8 @@
           <DashboardPage {navigate} />
         {:else if path === '/issues'}
           <IssuesPage {navigate} />
+        {:else if path.startsWith('/issues/cluster/')}
+          <ClusterDetailPage clusterId={path.split('/').pop()!} {navigate} />
         {:else if path.startsWith('/issues/')}
           <IssueDetailPage issueId={path.split('/').pop()!} {navigate} />
         {:else if path === '/blockchain'}
@@ -85,6 +89,8 @@
           <SimulasiPage {navigate} />
         {:else if path === '/settings'}
           <SettingsPage {navigate} />
+        {:else if path === '/setup'}
+          <SetupPage {navigate} />
         {/if}
         <div class="mt-auto">
           <Footer />

@@ -1,0 +1,7 @@
+flask>=2.0
+numpy
+scikit-learn
+pytest
+matplotlib>=3.7
+# opsional (latar batas negara pada peta klaster):
+geopandas>=0.14

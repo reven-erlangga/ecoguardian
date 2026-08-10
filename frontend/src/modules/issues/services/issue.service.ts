@@ -1,6 +1,6 @@
 import { client } from '@shared/utils/graphql';
 import { camelizeKeys } from '@shared/utils/camelize';
-import { LIST_ISSUES, LIST_CLUSTERS, ISSUE_COUNT } from '../graphql/queries';
+import { LIST_ISSUES, LIST_CLUSTERS, GET_ISSUE, ISSUE_COUNT } from '../graphql/queries';
 import { RESOLVE_ISSUE } from '../graphql/mutations';
 import type { Issue, Cluster } from '../types';
 
@@ -29,6 +29,13 @@ export async function listClusters(): Promise<Cluster[]> {
   const r = await client.query(LIST_CLUSTERS, {}).toPromise();
   if (r.error) throw r.error;
   return camelizeKeys(r.data?.issue_IssueService_ListClusters?.clusters ?? []);
+}
+
+export async function getIssue(id: string): Promise<Issue | null> {
+  const r = await client.query(GET_ISSUE, { input: { id } }, { requestPolicy: 'network-only' }).toPromise();
+  if (r.error) throw r.error;
+  const raw = r.data?.issue_IssueService_GetIssue?.issue;
+  return raw ? (camelizeKeys(raw) as Issue) : null;
 }
 
 export async function resolveIssue(

@@ -22,14 +22,14 @@ message RecentIssue {
 }
 
 message DashboardStats {
-  int64 total_tweets = 1;
-  int64 total_issues = 2;
-  int64 open_issues = 3;
-  int64 resolved_issues = 4;
-  int64 unread_notifications = 5;
-  int64 blockchain_blocks = 6;
+  int32 total_tweets = 1;
+  int32 total_issues = 2;
+  int32 open_issues = 3;
+  int32 resolved_issues = 4;
+  int32 unread_notifications = 5;
+  int32 blockchain_blocks = 6;
   bool blockchain_verified = 7;
-  map<string, int64> issues_by_type = 8;
+  map<string, int32> issues_by_type = 8;
   repeated RecentTweet recent_tweets = 9;
   repeated RecentIssue recent_issues = 10;
 }

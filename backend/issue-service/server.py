@@ -1,6 +1,6 @@
 """Issue Service — gRPC server for issue management"""
 
-import os, sys, time
+import os, sys, time, threading
 from concurrent import futures
 
 import grpc
@@ -13,6 +13,7 @@ sys.path.insert(1, _proj)
 from lib.config import Config
 from lib.db import IssueRepository
 from lib.dashboard import DashboardServicer
+from lib.setup import build_setup_app
 from common import common_pb2
 from issue import issue_pb2, service_pb2, service_pb2_grpc
 from dashboard import service_pb2_grpc as dashboard_service_pb2_grpc
@@ -50,11 +51,13 @@ def _doc_to_cluster(c: dict) -> issue_pb2.Cluster:
     addrs = c.get("addresses", [])
     address = addrs[0] if addrs else f"Cluster {c.get('cluster_id', '?')}"
     return issue_pb2.Cluster(
+        cluster_id=str(c.get("cluster_id", "")),
         address=address,
         lat=float(lat) if lat is not None else 0.0,
         lon=float(lon) if lon is not None else 0.0,
         issue_count=int(c.get("issue_count", 0)),
         types=list(c.get("types", [])),
+        issue_ids=list(c.get("issue_ids", [])),
     )
 
 
@@ -142,5 +145,16 @@ if __name__ == "__main__":
     service_pb2_grpc.add_IssueServiceServicer_to_server(IssueServicer(repo, publisher), server)
     dashboard_service_pb2_grpc.add_DashboardServiceServicer_to_server(DashboardServicer(repo), server)
     server.add_insecure_port(f"0.0.0.0:{cfg.GRPC_PORT}")
+    server.start()
     print(f"✅ IssueService gRPC on port {cfg.GRPC_PORT}")
+
+    # Setup HTTP API (konfigurasi clustering) — jalankan sebagai thread
+    setup_app = build_setup_app(repo)
+    setup_thread = threading.Thread(
+        target=lambda: setup_app.run(host="0.0.0.0", port=cfg.SETUP_HTTP_PORT, debug=False),
+        daemon=True,
+    )
+    setup_thread.start()
+    print(f"✅ Setup HTTP on port {cfg.SETUP_HTTP_PORT}")
+
     server.wait_for_termination()

@@ -13,9 +13,11 @@ export interface Issue {
 }
 
 export interface Cluster {
+  clusterId: string;
   address: string;
   lat: number;
   lon: number;
   issueCount: number;
   types: string[];
+  issueIds: string[];
 }

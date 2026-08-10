@@ -20,5 +20,13 @@ class Config:
         os.path.join(os.path.dirname(__file__), "..", "models", "labels.json"),
     )
 
+    # Dataset retrain (gambar laporan masuk dikumpulkan di sini per label)
+    TRAINING_DATA_DIR = os.getenv(
+        "TRAINING_DATA_DIR",
+        os.path.join(os.path.dirname(__file__), "..", "training-data"),
+    )
+    # Simpan otomatis gambar hasil klasifikasi sebagai data training
+    SAVE_TRAINING_SAMPLES = os.getenv("SAVE_TRAINING_SAMPLES", "1") == "1"
+
     # RabbitMQ (optional — untuk publish event hasil klasifikasi)
     RABBITMQ_URI = os.getenv("RABBITMQ_URI", "amqp://guest:guest@localhost:5672")

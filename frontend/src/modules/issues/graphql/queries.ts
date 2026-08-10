@@ -7,7 +7,7 @@ export const LIST_ISSUES = `query($input: issue__ListIssuesRequest_Input) {
 
 export const LIST_CLUSTERS = `query {
   issue_IssueService_ListClusters {
-    clusters { address lat lon issue_count types }
+    clusters { cluster_id address lat lon issue_count types issue_ids }
   }
 }`;
 

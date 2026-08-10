@@ -1,6 +1,7 @@
 // ponytail: action handlers + CSS classes untuk NotifPanel
 
 import { notifStore } from '../../stores/notif.stores';
+import { authStore } from '$modules/auth/stores/auth.stores';
 
 export const containerClass = 'space-y-2';
 export const headerClass = 'flex justify-end';
@@ -19,13 +20,20 @@ export const useNotifPanel = () => {
 
   const unreadCount = $derived(store.data.notifs.filter((n) => n.status === 'unread').length);
 
+  // user_id untuk filter notifikasi per user login
+  const userId = $derived(authStore.session.data.user?.id ?? '');
+
+  async function handleFetch() {
+    await notifStore.actions.fetch(userId);
+  }
+
   async function handleMarkRead(id: string) {
-    await notifStore.actions.markRead(id);
+    await notifStore.actions.markRead(id, userId);
   }
 
   async function handleMarkAllRead() {
-    await notifStore.actions.markAllRead();
+    await notifStore.actions.markAllRead(userId);
   }
 
-  return { store, unreadCount, handleMarkRead, handleMarkAllRead };
+  return { store, unreadCount, handleFetch, handleMarkRead, handleMarkAllRead };
 };

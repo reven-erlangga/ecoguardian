@@ -34,9 +34,11 @@ message Resolution {
 }
 
 message Cluster {
-  string address = 1;
-  double lat = 2;
-  double lon = 3;
-  int32 issue_count = 4;
-  repeated string types = 5;
+  string cluster_id = 1;
+  string address = 2;
+  double lat = 3;
+  double lon = 4;
+  int32 issue_count = 5;
+  repeated string types = 6;
+  repeated string issue_ids = 7;
 }

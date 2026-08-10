@@ -27,3 +27,39 @@ export async function getTwitterCredentialsStatus(): Promise<CredentialsStatus> 
   if (!res.ok) return { configured: false };
   return res.json();
 }
+
+export interface OAuth2TokenPayload {
+  access_token: string;
+  refresh_token: string;
+  client_id: string;
+  client_secret: string;
+}
+
+export async function saveOAuth2Token(payload: OAuth2TokenPayload): Promise<void> {
+  const res = await fetch(`${TWITTER_SERVICE_URL}/settings/oauth2`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error ?? 'Failed to save OAuth2 token');
+  }
+}
+
+export interface TokenTestResult {
+  valid: boolean;
+  username?: string;
+  status?: number;
+  detail?: string;
+  error?: string;
+}
+
+export async function testOAuth2Token(): Promise<TokenTestResult> {
+  const res = await fetch(`${TWITTER_SERVICE_URL}/settings/oauth2/test`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    return { valid: false, detail: err.error ?? res.statusText };
+  }
+  return res.json();
+}

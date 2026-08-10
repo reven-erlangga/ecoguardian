@@ -27,9 +27,30 @@ const pubsub = new SimplePubSub();
 
 // ── RabbitMQ ───────────────────────────────────────────────
 
+const RECONNECT_DELAY_MS = 3000;
+
 async function start() {
+  let conn;
   try {
-    const conn = await amqp.connect(RABBITMQ_URI);
+    conn = await amqp.connect(RABBITMQ_URI);
+  } catch (e) {
+    console.error("⚠️  RabbitMQ not available:", e.message);
+    // ponytail: retry forever — rabbitmq boleh belum siap / drop koneksi
+    setTimeout(start, RECONNECT_DELAY_MS);
+    return;
+  }
+
+  // Handle connection errors/reconnects — tanpa ini, ECONNRESET mematikan proses
+  conn.on("error", (err) => {
+    console.error("⚠️  RabbitMQ connection error:", err.message, "— reconnecting…");
+    try { conn.close(); } catch (_) {}
+  });
+  conn.on("close", () => {
+    console.log("🔌 RabbitMQ connection closed — reconnecting…");
+    setTimeout(start, RECONNECT_DELAY_MS);
+  });
+
+  try {
     const ch = await conn.createChannel();
     await ch.assertExchange("ecoguard.events", "topic", { durable: true });
     const q = await ch.assertQueue("", { exclusive: true });
@@ -45,7 +66,8 @@ async function start() {
     });
     console.log("✅ RabbitMQ subscription consumer ready");
   } catch (e) {
-    console.error("⚠️  RabbitMQ not available:", e.message);
+    console.error("⚠️  RabbitMQ setup error:", e.message, "— reconnecting…");
+    setTimeout(start, RECONNECT_DELAY_MS);
   }
 }
 

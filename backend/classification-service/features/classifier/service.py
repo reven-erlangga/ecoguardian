@@ -4,13 +4,24 @@ Preprocess image → run inference → map to label.
 Supports single and multi-image classification with aggregation.
 """
 
+import hashlib
 import io
+import os
+import time
 from collections import Counter
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
 
 from .infer import ONNXInferenceEngine
+from features.retrain import _safe_label
+
+TRAINING_DATA_DIR = Path(os.getenv(
+    "TRAINING_DATA_DIR",
+    os.path.join(os.path.dirname(__file__), "..", "..", "training-data"),
+))
+SAVE_TRAINING_SAMPLES = os.getenv("SAVE_TRAINING_SAMPLES", "1") == "1"
 
 
 class ClassificationService:
@@ -30,6 +41,7 @@ class ClassificationService:
         top_confidence = candidates[0]["confidence"]
 
         self._publish_event(tweet_id, top_label, top_confidence)
+        self._save_training_sample(image_data, image_format, top_label)
 
         return {
             "label": top_label,
@@ -91,8 +103,10 @@ class ClassificationService:
             ind["confidence"] for ind in individuals if ind["label"] == final_label
         )
 
-        # Re-classify the last image for candidates list
-        last = self.classify(images[-1]["data"], images[-1].get("format", "jpeg"))
+        # Re-classify the last image for candidates list.
+        # tweet_id kosong → event tidak di-publish dua kali (event mayoritas
+        # sudah dipublish di atas), tapi training sample tetap tersimpan.
+        last = self.classify(images[-1]["data"], images[-1].get("format", "jpeg"), tweet_id="")
         self._publish_event(tweet_id, final_label, final_confidence)
 
         return {
@@ -101,6 +115,23 @@ class ClassificationService:
             "candidates": last["candidates"],
             "individual": individuals,
         }
+
+    def _save_training_sample(self, image_data: bytes, image_format: str, label: str):
+        """Simpan gambar masuk ke training-data/<label>/ utk retrain (auto-accumulate)."""
+        if not SAVE_TRAINING_SAMPLES:
+            return
+        try:
+            label_dir = TRAINING_DATA_DIR / _safe_label(label or "unknown")
+            label_dir.mkdir(parents=True, exist_ok=True)
+            ext = (image_format or "jpg").lower()
+            if ext not in ("jpg", "jpeg", "png", "webp"):
+                ext = "jpg"
+            digest = hashlib.md5(image_data).hexdigest()[:12]
+            path = label_dir / f"{int(time.time())}_{digest}.{ext}"
+            if not path.exists():
+                path.write_bytes(image_data)
+        except Exception as exc:
+            print(f"⚠️  Gagal simpan training sample: {exc}")
 
     def _build_candidates(self, scores: list) -> list:
         candidates = [
