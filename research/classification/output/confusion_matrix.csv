@@ -1,0 +1,6 @@
+True \ Predicted,fallen_tree,flood,garbage,road_damage,vandalism
+fallen_tree,84,0,4,1,2
+flood,2,92,1,0,2
+garbage,8,3,70,5,14
+road_damage,2,0,0,95,0
+vandalism,4,1,1,3,85
