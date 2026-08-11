@@ -84,7 +84,7 @@ class RetrainManager:
                 "error": (
                     "torch tidak terpasang di environment service. "
                     "Jalankan retrain dari environment dengan torch (mis. "
-                    "research/training/.venv-train) atau install torch."
+                    "research/classification/.venv-train) atau install torch."
                 )
             }, 400
         epochs = max(1, int(epochs))

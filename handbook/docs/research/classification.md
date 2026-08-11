@@ -1,6 +1,6 @@
-# Training
+# Klasifikasi (Training + Evaluasi)
 
-Pipeline training model klasifikasi gambar dengan **EfficientNet-B0**, export ke **ONNX**.
+Pipeline klasifikasi gambar dengan **EfficientNet-B0**, export ke **ONNX**, serta **evaluasi model** menggunakan Confusion Matrix dan metrik Accuracy, Precision, Recall, F1-Score.
 
 ## Dataset
 
@@ -14,12 +14,12 @@ Pipeline training model klasifikasi gambar dengan **EfficientNet-B0**, export ke
 | `road_damage` | [Road Damage](https://www.kaggle.com/datasets/lorenzoarcioni/road-damage-dataset-potholes-cracks-and-manholes) |
 | `flood` | [Flood Images](https://www.kaggle.com/datasets/saiharshitjami/flood-images-mask-segmentation) |
 
-Dataset di `research/training/collections/` (gitignored).
+Dataset di `research/classification/collections/` (gitignored).
 
 ## Pipeline
 
 ```bash
-cd research/training
+cd research/classification
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
@@ -29,6 +29,9 @@ python split.py
 
 # 2. Training → ONNX export
 python train.py
+
+# 3. Evaluasi model (Confusion Matrix + metrics)
+python evaluate.py --data datasets/test --model output/model.onnx --labels output/labels.json
 ```
 
 ### split.py
@@ -42,6 +45,11 @@ python train.py
 - Freeze backbone, train classifier head
 - Augmentasi: flip, rotation, color jitter
 - Best model tiap epoch → ONNX export
+
+### evaluate.py
+- Prediksi semua gambar di `datasets/test/`
+- Hitung Confusion Matrix + Accuracy, Precision, Recall, F1-Score (macro)
+- Output: `output/confusion_matrix.csv`, `output/evaluation_metrics.json`
 
 ## ONNX Export
 

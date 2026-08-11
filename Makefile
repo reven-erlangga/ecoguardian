@@ -63,9 +63,9 @@ else ifeq ($(TARGET),cluster)
 	cp research/scraping/data/dataset.json backend/issue-service/features/clustering/models/tweets.json
 	cd backend/issue-service && python -m features.clustering.service
 else ifeq ($(TARGET),train)
-	cd research/training && python train.py
+	cd research/classification && python train.py
 else ifeq ($(TARGET),split)
-	cd research/training && python split.py
+	cd research/classification && python split.py
 else
 	@echo "╔══════════════════════════════════════════════╗"
 	@echo "║  make research TARGET=<target>              ║"

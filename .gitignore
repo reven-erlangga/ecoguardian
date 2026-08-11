@@ -9,13 +9,13 @@ nul
 frontend/nul
 
 # ─── Research (data besar) ───────────────────────────────
-research/training/collections/
-research/training/datasets/
-research/training/dataset/
-research/training/output/
-research/training/.venv/
-research/training/venv/
-research/training/__pycache__/
+research/classification/collections/
+research/classification/datasets/
+research/classification/dataset/
+research/classification/output/
+research/classification/.venv/
+research/classification/venv/
+research/classification/__pycache__/
 research/scraping/data/
 research/scraping/venv/
 research/scraping/.env

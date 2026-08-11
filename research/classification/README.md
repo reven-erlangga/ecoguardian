@@ -1,11 +1,11 @@
-# Training — Klasifikasi Gambar Ecoguard
+# Klasifikasi Gambar Ecoguard (Training + Evaluasi)
 
-Pipeline training model klasifikasi multi-label berbasis **EfficientNet-B0**, export ke **ONNX** untuk deployment.
+Pipeline training model klasifikasi multi-label berbasis **EfficientNet-B0**, export ke **ONNX**, serta **evaluasi model** (Confusion Matrix, Accuracy, Precision, Recall, F1-Score).
 
 ## Alur
 
 ```
-Download dataset → Taruh di collections/ → split.py (clean + resize 512×512 + split 80/10/10) → training → ONNX export → inference API
+Download dataset → Taruh di collections/ → split.py (clean + resize 512×512 + split 80/10/10) → training → ONNX export → evaluasi (confusion matrix + metrics) → inference API
 ```
 
 ## Daftar Dataset
@@ -117,6 +117,25 @@ curl -X POST -F "image=@test.jpg" http://localhost:5000/predict
 ```
 
 Balikin JSON: `{"prediction": "garbage", "confidence": 0.97}`
+
+### 6. Evaluasi Model (Confusion Matrix + Metrics)
+
+Setelah training, evaluasi model terhadap **test set**:
+
+```bash
+python evaluate.py --data datasets/test --model output/model.onnx --labels output/labels.json
+```
+
+Output:
+- Confusion matrix (cetak + `output/confusion_matrix.csv`)
+- Accuracy, Precision, Recall, F1-Score (macro)
+- `output/evaluation_metrics.json` (untuk laporan TA)
+
+### 7. Self-check Evaluasi
+
+```bash
+python check_evaluate.py   # uji fungsi metrik tanpa model (data sintetis)
+```
 
 ## Spesifikasi
 

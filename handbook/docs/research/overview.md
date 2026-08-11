@@ -4,7 +4,7 @@ Folder untuk penelitian skripsi.
 
 ```
 research/
-├── training/           # Training model EfficientNet-B0 → ONNX
+├── classification/     # Klasifikasi: training + evaluasi model
 │   ├── collections/    # Dataset gambar (gitignored)
 │   ├── split.py
 │   ├── train.py
