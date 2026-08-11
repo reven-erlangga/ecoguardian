@@ -69,3 +69,7 @@ infra/gateway/.mesh/
 .pytest_cache/
 **/.pytest_cache/
 .eslintcache
+
+# Generated protobuf stubs (Go) — artefak, bukan source
+protobuf/**/*.pb.go
+protobuf/**/*_grpc.pb.go
