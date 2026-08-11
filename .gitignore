@@ -78,3 +78,6 @@ infra/gateway/.mesh/
 protobuf/**/*.pb.go
 protobuf/**/*_grpc.pb.go
 research/classification/datasets_small/
+
+# Asset uploads (artefak runtime)
+backend/asset-service/uploads/

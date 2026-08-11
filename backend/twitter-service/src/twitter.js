@@ -113,19 +113,10 @@ export async function searchMentions(handle, rule) {
   const query = `@${handle.replace('@', '')} ${rule} -is:retweet`;
   const fields = 'tweet.fields=referenced_tweets,attachments,conversation_id,created_at';
   const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=20&${fields}`;
-  let token = oauth2.accessToken;
-  let res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  let data = await res.json();
-  if (res.status === 401 || res.status === 403) {
-    console.warn(`⚠️ search ${res.status}, refreshing token…`);
-    try {
-      token = await refreshAccessToken();
-      res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-      data = await res.json();
-    } catch (e) {
-      throw new Error(`search refresh failed: ${e.message}`);
-    }
-  }
+  // Recent Search memakai Bearer token (app-only), bukan user context token.
+  const token = config.bearerToken || oauth2.accessToken;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  const data = await res.json();
   if (!res.ok) throw new Error(JSON.stringify(data));
   return (data.data || []).map((t) => {
     const replied = (t.referenced_tweets || []).find((r) => r.type === 'replied_to');
