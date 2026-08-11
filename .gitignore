@@ -12,7 +12,9 @@ frontend/nul
 research/classification/collections/
 research/classification/datasets/
 research/classification/dataset/
-research/classification/output/
+research/classification/output/*
+!research/classification/output/model.onnx
+!research/classification/output/model.onnx.data
 research/classification/.venv/
 research/classification/venv/
 research/classification/__pycache__/
@@ -23,6 +25,8 @@ research/scraping/__pycache__/
 
 # ─── Model ONNX / PyTorch ────────────────────────────────
 *.onnx
+!research/classification/output/model.onnx
+!research/classification/output/model.onnx.data
 *.pth
 *.pt
 *.pkl

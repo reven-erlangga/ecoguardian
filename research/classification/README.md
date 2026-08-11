@@ -2,6 +2,8 @@
 
 Pipeline training model klasifikasi multi-label berbasis **EfficientNet-B0**, export ke **ONNX**, serta **evaluasi model** (Confusion Matrix, Accuracy, Precision, Recall, F1-Score).
 
+> **🚀 Training di Windows + NVIDIA GPU?** Lihat **[TRAINING_WINDOWS.md](./TRAINING_WINDOWS.md)** — panduan CUDA lengkap (instal torch CUDA, verifikasi GPU, train cepat).
+
 ## Alur
 
 ```
