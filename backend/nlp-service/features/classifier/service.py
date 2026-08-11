@@ -18,36 +18,27 @@ except Exception:
     classifier = None
     print("⚠️ IndoBERT not available, using keyword-based fallback")
 
-# Ecoguard environmental issue labels
+# Ecoguard environmental issue labels — konsisten dengan training.md (5 kategori)
 KEYWORDS = {
-    "deforestation": [
-        "hutan", "pohon", "gundul", "tebang", "sawit", "logging",
-        "deforestasi", "mangrove", "kebakaran hutan", "pembalakan", "taman nasional",
+    "fallen_tree": [
+        "pohon", "tumbang", "dahan", "ranting", "patah", "tumbang",
+        "batang", "pohon tumbang", "berdiri",
     ],
-    "water_pollution": [
-        "limbah", "sungai", "tercemar", "pencemaran", "tumpahan",
-        "minyak", "kali", "cemar", "laut tercemar", "air kotor", "teluk",
+    "garbage": [
+        "sampah", "tumpukan", "plastik", "limbah", "tpa", "daur ulang",
+        "bau sampah", "menumpuk", "kotor", "sampah menumpuk",
     ],
-    "air_pollution": [
-        "asap", "udara", "polusi", "pm2.5", "ispu", "kabut",
-        "karbon", "emisi", "terbakar", "kebakaran",
+    "vandalism": [
+        "vandalisme", "coret", "coretan", "grafiti", "perusakan",
+        "rusak", "pecah", "dicoret", "aksi vandalisme",
     ],
-    "illegal_mining": [
-        "tambang", "galian", "emas", "batubara", "nikel", "mineral",
-        "merkuri", "tambang ilegal",
+    "road_damage": [
+        "jalan rusak", "lubang", "aspal", "berlubang", "jalan",
+        "jalan berlubang", "trotoar", "rusak parah",
     ],
-    "wildlife_trafficking": [
-        "satwa", "burung", "penyelundupan", "cula", "gading",
-        "harimau", "orangutan", "dilindungi", "cenderawasih",
-    ],
-    "coral_bleaching": [
-        "karang", "reef", "pemutihan", "bleaching", "coral", "terumbu",
-    ],
-    "coastal_erosion": [
-        "abrasi", "pantai", "erosi", "garis pantai", "surut",
-    ],
-    "waste_management": [
-        "sampah", "tpa", "plastik", "limbah padat", "daur ulang", "bau sampah",
+    "flood": [
+        "banjir", "genangan", "terendam", "air naik", "meluap",
+        "sungai", "banjir bandang", "tergenang",
     ],
 }
 
@@ -77,7 +68,7 @@ def _classify_transformers(text: str) -> tuple:
     result = classifier(text, top_k=None)
 
     # pipeline returns list of dicts: [{"label": ..., "score": ...}, ...]
-    # Map model label to our 3 labels
+    # Map model label to our 5 labels
     label_map = {}
     for r in result:
         raw = r["label"].lower()
@@ -93,10 +84,20 @@ def _classify_transformers(text: str) -> tuple:
 
 
 def classify(text: str) -> tuple:
-    """Classify text into one of: fallen_tree, garbage, vandalism.
+    """Classify text into one of: fallen_tree, garbage, vandalism,
+    road_damage, flood.
+
+    Menggunakan IndoBERT bila tersedia; jika IndoBERT tidak mampu
+    memetakan ke kategori yang dikenal (label pretrained berbeda dengan
+    5 kategori kustom), maka fallback ke keyword-based agar hasil selalu
+    berupa salah satu dari 5 kategori.
 
     Returns (label: str, confidence: float).
     """
     if classifier is not None:
-        return _classify_transformers(text)
+        label, conf = _classify_transformers(text)
+        if label in LABELS:
+            return (label, conf)
+        # IndoBERT tidak memetakan ke kategori dikenal → fallback keyword
+        return _classify_keyword(text)
     return _classify_keyword(text)

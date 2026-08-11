@@ -20,6 +20,7 @@ from nlp import nlp_pb2, service_pb2, service_pb2_grpc
 
 from common.config import Config
 from common.grpc_server import serve
+from features.preprocess import service as preprocess_service
 from features.classifier import service as classifier_service
 from features.ner import service as ner_service
 from features.paraphrase import service as paraphrase_service
@@ -43,14 +44,18 @@ class NLPServiceServicer(service_pb2_grpc.NLPServiceServicer):
     def AnalyzeText(self, request, context):
         text = request.text
 
-        # 1. Classify
-        label, confidence = classifier_service.classify(text)
+        # 0. Preprocessing — bersihkan teks sebelum analisis
+        pre = preprocess_service.preprocess(text)
+        clean_text = pre["text"] if pre["text"] else text
 
-        # 2. NER — extract address
+        # 1. Classify
+        label, confidence = classifier_service.classify(clean_text)
+
+        # 2. NER — extract address (dari teks mentah agar alamat utuh)
         address = ner_service.extract_address(text)
 
-        # 3. Paraphrase — never includes original text
-        paraphrased = paraphrase_service.paraphrase(text, label, address)
+        # 3. Paraphrase — dari teks yang sudah di-preprocess
+        paraphrased = paraphrase_service.paraphrase(clean_text, label, address)
 
         return nlp_pb2.AnalyzeTextResponse(
             label=label,
