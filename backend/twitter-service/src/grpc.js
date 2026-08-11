@@ -18,6 +18,37 @@ function toTimestamp(date) {
   return { seconds, nanos };
 }
 
+// Map TweetDoc (MongoDB) → proto Tweet (termasuk classification & location)
+function toTweetProto(doc) {
+  const classification = doc.classification
+    ? {
+        text: {
+          label: doc.classification.text?.label || '',
+          confidence: doc.classification.text?.confidence || 0,
+        },
+        image: {
+          label: doc.classification.image?.label || '',
+          confidence: doc.classification.image?.confidence || 0,
+        },
+      }
+    : null;
+  return {
+    id: doc._id.toString(),
+    tweet_id: doc.tweet_id,
+    text: doc.paraphrased_text || doc.text || '',
+    author: doc.author || '',
+    author_username: doc.author_username || '',
+    media_urls: doc.media_urls || [],
+    created_at: toTimestamp(doc.created_at),
+    metadata: doc.metadata || {},
+    paraphrased_text: doc.paraphrased_text || '',
+    classification,
+    location: doc.location
+      ? { lat: doc.location.lat || 0, lon: doc.location.lon || 0, address: doc.location.address || '' }
+      : null,
+  };
+}
+
 export function startGrpc(port) {
   const server = new grpc.Server();
 
@@ -47,16 +78,7 @@ export function startGrpc(port) {
       try {
         const doc = await getDb().collection('tweets').findOne({ _id: call.request.id });
         if (!doc) return callback({ code: grpc.status.NOT_FOUND, message: 'tweet not found' });
-        callback(null, {
-          id: doc._id.toString(),
-          tweet_id: doc.tweet_id,
-          text: doc.paraphrased_text,
-          author: doc.author,
-          author_username: doc.author_username,
-          media_urls: doc.media_urls || [],
-          created_at: toTimestamp(doc.created_at),
-          metadata: doc.metadata || {},
-        });
+        callback(null, toTweetProto(doc));
       } catch (e) {
         callback({ code: grpc.status.INTERNAL, message: String(e.message || e) });
       }
@@ -82,12 +104,7 @@ export function startGrpc(port) {
         const docs = await coll.find(filter).sort({ created_at: -1 }).skip((page - 1) * perPage).limit(perPage).toArray();
         const total = await coll.countDocuments(filter);
         callback(null, {
-          tweets: docs.map((doc) => ({
-            id: doc._id.toString(), tweet_id: doc.tweet_id, text: doc.paraphrased_text,
-            author: doc.author, author_username: doc.author_username,
-            media_urls: doc.media_urls || [], created_at: toTimestamp(doc.created_at),
-            metadata: doc.metadata || {},
-          })),
+          tweets: docs.map(toTweetProto),
           pagination: { page, per_page: perPage, total },
         });
       } catch (e) {

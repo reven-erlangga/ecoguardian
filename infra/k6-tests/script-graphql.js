@@ -19,11 +19,11 @@ export default function () {
   // Minimal query — no arguments so it doesn't depend on external data
   const query = `
     query {
-      classification_classifyImage(imageData: "", imageFormat: "jpeg") {
-        result {
-          label
-          confidence
-        }
+      dashboard_DashboardService_GetStats(input: {}) {
+        total_issues
+        open_issues
+        resolved_issues
+        unread_notifications
       }
     }
   `;

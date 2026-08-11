@@ -15,6 +15,25 @@ message Tweet {
   repeated string media_urls = 6;
   common.Timestamp created_at = 7;
   map<string, string> metadata = 8;
+  string paraphrased_text = 9;
+  ClassificationResult classification = 10;
+  Location location = 11;
+}
+
+message Location {
+  double lat = 1;
+  double lon = 2;
+  string address = 3;
+}
+
+message ClassificationDetail {
+  string label = 1;
+  float confidence = 2;
+}
+
+message ClassificationResult {
+  ClassificationDetail text = 1;
+  ClassificationDetail image = 2;
 }
 
 message QueryTweetsRequest {

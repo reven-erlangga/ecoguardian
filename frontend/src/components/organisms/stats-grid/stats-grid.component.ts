@@ -20,18 +20,18 @@ export const DEFAULT_CARDS: CardData[] = [
   { title: 'Notifikasi', value: 0, icon: BellIcon, color: 'purple' },
 ];
 
-const TWEETS_QUERY = `query { twitter_TwitterService_ListTweets(input: { page: 1, perPage: 1 }) { total } }`;
-const NOTIFS_QUERY = `query { notification_NotificationService_ListNotifications(input: { page: 1, perPage: 1 }) { total } }`;
+const TWEETS_QUERY = `mutation { twitter_TwitterService_QueryTweets(input: { pagination: { page: 1, per_page: 1 } }) { pagination { total } } }`;
+const NOTIFS_QUERY = `query { notification_NotificationService_GetNotifications(input: { pagination: { page: 1, per_page: 1 } }) { pagination { total } } }`;
 
 export async function fetchStatsFromGateway(): Promise<Partial<Record<string, number>>> {
   try {
     const [tweetRes, notifRes] = await Promise.all([
-      client.query(TWEETS_QUERY).toPromise(),
+      client.mutation(TWEETS_QUERY).toPromise(),
       client.query(NOTIFS_QUERY).toPromise(),
     ]);
     return {
-      tweets: tweetRes.data?.twitter_TwitterService_ListTweets?.total || 0,
-      unreadNotifs: notifRes.data?.notification_NotificationService_ListNotifications?.total || 0,
+      tweets: tweetRes.data?.twitter_TwitterService_QueryTweets?.pagination?.total || 0,
+      unreadNotifs: notifRes.data?.notification_NotificationService_GetNotifications?.pagination?.total || 0,
     };
   } catch {
     return {};

@@ -2,6 +2,8 @@ export const LABELS = [
   { value: 'fallen_tree', label: 'Pohon Tumbang', color: 'bg-green-500' },
   { value: 'garbage', label: 'Sampah', color: 'bg-yellow-500' },
   { value: 'vandalism', label: 'Vandalisme', color: 'bg-red-500' },
+  { value: 'road_damage', label: 'Jalan Rusak', color: 'bg-blue-500' },
+  { value: 'flood', label: 'Banjir', color: 'bg-cyan-500' },
 ] as const;
 
 export const PAGE_SIZE = 20;

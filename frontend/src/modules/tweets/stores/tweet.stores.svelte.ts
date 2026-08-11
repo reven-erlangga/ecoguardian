@@ -41,13 +41,17 @@ export const tweetStore = {
     async fetch(filters?: { keyword?: string; author?: string; classificationLabel?: string }) {
       feed.meta = { loading: true, message: '' };
       try {
-        const r = await client.query(QUERY_TWEETS, {
-          input: { ...filters, page: feed.data.page, perPage: PER_PAGE },
+        const r = await client.mutation(QUERY_TWEETS, {
+          input: {
+            ...filters,
+            pagination: { page: feed.data.page, per_page: PER_PAGE },
+          },
         }).toPromise();
         if (r.error) throw new Error(r.error.message);
-        if (r.data?.twitter_TwitterService_ListTweets) {
-          feed.data.tweets = camelizeKeys(r.data.twitter_TwitterService_ListTweets.tweets);
-          feed.data.total = r.data.twitter_TwitterService_ListTweets.total;
+        const data = r.data?.twitter_TwitterService_QueryTweets;
+        if (data) {
+          feed.data.tweets = camelizeKeys(data.tweets ?? []);
+          feed.data.total = data.pagination?.total ?? 0;
         }
         feed.meta = { loading: false, message: '' };
       } catch (e) {
@@ -65,7 +69,7 @@ export const tweetStore = {
       detail.meta = { loading: true, message: '' };
       detail.params = { tweetId };
       try {
-        const r = await client.query(GET_TWEET, { id: tweetId }).toPromise();
+        const r = await client.query(GET_TWEET, { input: { id: tweetId } }).toPromise();
         if (r.error) throw new Error(r.error.message);
         detail.data.tweet = r.data?.twitter_TwitterService_GetTweet
           ? camelizeKeys(r.data.twitter_TwitterService_GetTweet)
